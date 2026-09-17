@@ -1,0 +1,71 @@
+# Cross Ancestry Mendelian Randomisation
+
+The goal of CAMeRa is to estimate causal effects using summary
+statistics in multiple ancestries. CAMeRa provides:
+
+1.  Selecting genetic instruments for multiple populations.
+2.  Estimating the causal effect where exposure and outcome summary
+    statistics are from different ancestral populations.
+3.  Jointly modelling causal and pleiotropic effects across multiple
+    populations.
+
+## Installation
+
+Install CAMeRa from our MRCIEU R-Universe
+
+\
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``'CAMeRa'``, repos ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``'https://mrcieu.r-universe.dev'``, ``'https://cloud.r-project.org'``)``)`
+
+or from its GitHub repository
+
+\
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"remotes"``)`\
+`remotes``::`[`install_github`](https://remotes.r-lib.org/reference/install_github.html)`(``"MRCIEU/CAMERA"``)`
+
+## Example
+
+See the vignettes for examples
+
+## Citation
+
+If using this software or methodology please cite:
+
+Yoonsu Cho, Amanda Chong, Tom Palmer, Amy Mason, John Ferguson, David
+Evans, George Davey Smith, Gibran Hemani. **Jointly modelling multiple
+ancestral populations using GWAS summary data improves causal
+inference**. 27 March 2025, PREPRINT (Version 1) available at Research
+Square <https://doi.org/10.21203/rs.3.rs-6091701/v1>
+
+# Package index
+
+## All functions
+
+- [`CAMERA`](https://mrcieu.github.io/CAMERA/reference/CAMERA.md) : R6
+  class for CAMERA
+- [`CAMERA_local`](https://mrcieu.github.io/CAMERA/reference/CAMERA_local.md)
+  : CAMERA_local class
+- [`CAMeRa-package`](https://mrcieu.github.io/CAMERA/reference/CAMeRa-package.md)
+  [`CAMeRa`](https://mrcieu.github.io/CAMERA/reference/CAMeRa-package.md)
+  [`camera`](https://mrcieu.github.io/CAMERA/reference/CAMeRa-package.md)
+  : CAMeRa: CAMeRa (Cross Ancestral Mendelian Randomisation)
+- [`egger_bootstrap()`](https://mrcieu.github.io/CAMERA/reference/egger_bootstrap.md)
+  : Perform MR GxE
+- [`fixed_effects_meta_analysis()`](https://mrcieu.github.io/CAMERA/reference/fixed_effects_meta_analysis.md)
+  : Perform fixed effects meta analysis for one association
+- [`fixed_effects_meta_analysis_fast()`](https://mrcieu.github.io/CAMERA/reference/fixed_effects_meta_analysis_fast.md)
+  : Fixed effects meta analysis vectorised across multiple SNPs
+- [`identify_blownup_estimates()`](https://mrcieu.github.io/CAMERA/reference/identify_blownup_estimates.md)
+  : Identify blown up estimates
+- [`prop_overlap()`](https://mrcieu.github.io/CAMERA/reference/prop_overlap.md)
+  : Estimate expected vs observed replication of effects between
+  discovery and replication datasets
+- [`z_meta_analysis()`](https://mrcieu.github.io/CAMERA/reference/z_meta_analysis.md)
+  : P-value based meta analysis
+
+# Articles
+
+### All vignettes
+
+- [Import to CAMERA from local
+  data](https://mrcieu.github.io/CAMERA/articles/import-local.md):
+- [Tutorial](https://mrcieu.github.io/CAMERA/articles/tutorial.md):

@@ -1,60 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/404.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/articles/development.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/articles/import-local.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/articles/tutorial.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/index.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/CAMERA.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/CAMERA_local.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/egger_bootstrap.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/fixed_effects_meta_analysis.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/fixed_effects_meta_analysis_fast.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/identify_blownup_estimates.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/prop_overlap.html</loc>
-  </url>
-  <url>
-    <loc>https://mrcieu.github.io/CAMERA/reference/z_meta_analysis.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://mrcieu.github.io/CAMERA/404.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/LICENSE-text.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/LICENSE.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/articles/development.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/articles/import-local.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/articles/index.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/articles/tutorial.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/authors.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/index.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/news/index.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/CAMERA.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/CAMERA_local.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/CAMeRa-package.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/egger_bootstrap.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/fixed_effects_meta_analysis.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/fixed_effects_meta_analysis_fast.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/identify_blownup_estimates.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/index.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/pipe.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/prop_overlap.html</loc></url>
+<url><loc>https://mrcieu.github.io/CAMERA/reference/z_meta_analysis.html</loc></url>
 </urlset>
+
