@@ -90,7 +90,7 @@ CAMERA$set("public", "pleiotropy", function(harmonised_dat = self$harmonised_dat
 #' @return plot
 CAMERA$set("public", "plot_pleiotropy", function(dat = self$pleiotropy_outliers) {
   combs <- expand.grid(pop1=unique(dat$pops), pop2=unique(dat$pops), stringsAsFactors=FALSE) %>% dplyr::filter(pop1 > pop2)
-  combs <- dplyr::inner_join(combs, dat %>% dplyr::select(SNP, pop1=pops, dif1=dif, dif1.se=dif.se), relationship = "many-to-many") %>% dplyr::inner_join(., dat %>% dplyr::select(SNP, pop2=pops, dif2=dif, dif2.se=dif.se), relationship = "many-to-many")
+  combs <- dplyr::inner_join(combs, dat %>% dplyr::select(SNP, pop1=pops, dif1=dif, dif1.se=dif.se), by = "pop1", relationship = "many-to-many") %>% dplyr::inner_join(., dat %>% dplyr::select(SNP, pop2=pops, dif2=dif, dif2.se=dif.se), by = c("pop2", "SNP"), relationship = "many-to-many")
 
   ggplot2::ggplot(combs %>% dplyr::filter(abs(dif1) < 10 & abs(dif2) < 10), ggplot2::aes(x=dif1, y=dif2)) +
   ggplot2::geom_point() +
@@ -99,7 +99,7 @@ CAMERA$set("public", "plot_pleiotropy", function(dat = self$pleiotropy_outliers)
   ggplot2::geom_errorbar(ggplot2::aes(ymin=dif2-1.96*dif2.se, ymax=dif2+1.96*dif2.se), width=0) +
   ggplot2::geom_errorbar(ggplot2::aes(xmin=dif1-1.96*dif1.se, xmax=dif1+1.96*dif1.se), width=0, orientation="y") +
   ggplot2::facet_grid(pop2 ~ pop1) +
-  ggplot2::geom_smooth(method="lm") +
+  ggplot2::geom_smooth(method="lm", formula=y ~ x) +
   ggplot2::labs(x="Deviation from MR estimate (pop 1)", y="Deviation from MR estimate (pop 2)")
 
   # combs %>% group_by(pop1, pop2) %>%

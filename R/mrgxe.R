@@ -134,7 +134,7 @@ CAMERA$set("public", "mrgxe_plot_variant", function(variant = self$mrgxe_res %>%
         ggplot2::geom_errorbar(ggplot2::aes(ymin=beta.y-1.96*se.y, ymax=beta.y+1.96*se.y), colour="grey", width=0) +
         ggplot2::geom_errorbar(ggplot2::aes(xmin=beta.x-1.96*se.x, xmax=beta.x+1.96*se.x), colour="grey", width=0, orientation="y") +
         ggplot2::facet_wrap(~ SNP, scale="free") +
-        ggplot2::geom_smooth(method="lm") +
+        ggplot2::geom_smooth(method="lm", formula=y ~ x) +
         ggplot2::geom_vline(xintercept=0, linetype="dotted") +
         ggplot2::geom_hline(yintercept=0, linetype="dotted")
 })
