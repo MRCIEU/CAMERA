@@ -18,9 +18,9 @@ CAMERA$set("public", "perform_basic_sem", function(harmonised_dat = self$harmoni
     {dplyr::tibble(Methods = "IVW", pop = "1", nsnp = nrow(d), bivhat = .$b, se = .$se, pval = .$pval)}
   out$ivw2 <- TwoSampleMR::mr_ivw(d$x2, d$y2, d$xse2, d$yse2) %>%
     {dplyr::tibble(Methods = "IVW", pop = "2", nsnp = nrow(d), bivhat = .$b, se = .$se, pval = .$pval)}
-  out$rm1 <- summary(lm(o1 ~ -1 + w1, data = d)) %>%
+  out$rm1 <- summary(stats::lm(o1 ~ -1 + w1, data = d)) %>%
     {dplyr::tibble(Methods = "RadialIVW", pop = "1", nsnp = nrow(d), bivhat = .$coef[1, 1], se = .$coef[1, 2], pval = .$coef[1, 4])}
-  out$rm2 <- summary(lm(o2 ~ -1 + w2, data = d)) %>%
+  out$rm2 <- summary(stats::lm(o2 ~ -1 + w2, data = d)) %>%
     {dplyr::tibble(Methods = "RadialIVW", pop = "2", nsnp = nrow(d), bivhat = .$coef[1, 1], se = .$coef[1, 2], pval = .$coef[1, 4])}
 
   out$semA <- self$runsem("
@@ -50,8 +50,12 @@ CAMERA$set("public", "perform_basic_sem", function(harmonised_dat = self$harmoni
 })
 
 
-#' @importFrom dplyr tibble
-#' @importFrom dplyr mutate
+#' @description
+#' Fit an SEM model using lavaan
+#' @param model lavaan model syntax
+#' @param data Data frame of the data for the model
+#' @param modname Name of the model used to label the results
+#' @return Data frame of the SEM estimates for each population
 CAMERA$set("public", "runsem", function(model, data, modname) {
   mod <- lavaan::sem(model, data = data)
   invisible(capture.output(mod <- lavaan::summary(mod, fit.measures = TRUE)))
@@ -103,19 +107,18 @@ CAMERA$set("private", "jackknife2", function(x, theta, ...) {
 })
 
 
-#' @importFrom dplyr tibble
 CAMERA$set("private", "bootstrap_diff", function(nboot, slope, slope_se, b_out, b_out_se, b_exp, b_exp_se) {
   expected_b_out <- b_exp * slope
   diff <- b_out - expected_b_out
 
   # bootstrap to get diff_se
   boots <- dplyr::tibble(
-    B_EXP = rnorm(nboot, mean = b_exp, sd = b_exp_se),
-    B_OUT = rnorm(nboot, mean = b_out, sd = b_out_se),
-    SLOPE = rnorm(nboot, mean = slope, sd = slope_se),
+    B_EXP = stats::rnorm(nboot, mean = b_exp, sd = b_exp_se),
+    B_OUT = stats::rnorm(nboot, mean = b_out, sd = b_out_se),
+    SLOPE = stats::rnorm(nboot, mean = slope, sd = slope_se),
     DIFF = B_OUT - B_EXP * SLOPE
   )
-  diff_se <- sd(boots$DIFF)
+  diff_se <- stats::sd(boots$DIFF)
   return(list(
     diff = diff,
     diff_se = diff_se
@@ -124,7 +127,7 @@ CAMERA$set("private", "bootstrap_diff", function(nboot, slope, slope_se, b_out, 
 
 
 CAMERA$set("private", "bootstrap", function(wr, wr.se, ivw, ivw.se, nboot = 1000) {
-  res <- rnorm(nboot, wr, wr.se) - rnorm(nboot, ivw, ivw.se)
+  res <- stats::rnorm(nboot, wr, wr.se) - stats::rnorm(nboot, ivw, ivw.se)
   pe <- wr - ivw
-  return(c(pleio = pe, sd = sd(res)))
+  return(c(pleio = pe, sd = stats::sd(res)))
 })

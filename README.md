@@ -16,8 +16,13 @@ statistics in multiple ancestries. CAMeRa provides:
 
 ## Installation
 
-You can install the released / development version of CAMeRa from GitHub
-with:
+Install CAMeRa from our MRCIEU R-Universe
+
+```r
+install.packages('CAMeRa', repos = c('https://mrcieu.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+or from its GitHub repository
 
 ``` r
 install.packages("remotes")
@@ -32,4 +37,4 @@ See the vignettes for examples
 
 If using this software or methodology please cite:
 
-Yoonsu Cho, Amanda Chong, Amy Mason, John Ferguson, David Evans, George Davey Smith, Gibran Hemani. **Jointly modelling multiple ancestral populations using GWAS summary data improves causal inference**. 27 March 2025, PREPRINT (Version 1) available at Research Square [https://doi.org/10.21203/rs.3.rs-6091701/v1]
+Yoonsu Cho, Amanda Chong, Tom Palmer, Amy Mason, John Ferguson, David Evans, George Davey Smith, Gibran Hemani. **Jointly modelling multiple ancestral populations using GWAS summary data improves causal inference**. 27 March 2025, PREPRINT (Version 1) available at Research Square <https://doi.org/10.21203/rs.3.rs-6091701/v1>

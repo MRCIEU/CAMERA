@@ -12,9 +12,9 @@ fixed_effects_meta_analysis_fast <- function(beta_mat, se_mat) {
   beta <- rowSums(beta_mat * w) / rowSums(w, na.rm=TRUE)
   se <- sqrt(1 / rowSums(w, na.rm=TRUE))
   z <- abs(beta / se)
-  p <- pnorm(z, lower.tail = FALSE)
+  p <- stats::pnorm(z, lower.tail = FALSE)
   nstudy <- apply(beta_mat, 1, \(x) sum(!is.na(x)))
-  return(tibble(nstudy, p, z=z))
+  return(dplyr::tibble(nstudy, p, z=z))
 }
 
 #' P-value based meta analysis
@@ -33,26 +33,28 @@ z_meta_analysis <- function(beta_mat, se_mat, n, eaf_mat) {
   z_mat <- abs(beta_mat) / se_mat
   w_mat <- t(t(sqrt(eaf_mat * (1 - eaf_mat) * 2)) * sqrt(n))
   zw <- rowSums(z_mat * w_mat, na.rm=TRUE) / sqrt(rowSums(w_mat^2, na.rm=TRUE))
-  p <- pnorm(abs(zw), lower.tail = FALSE)
+  p <- stats::pnorm(abs(zw), lower.tail = FALSE)
   nstudy <- apply(beta_mat, 1, \(x) sum(!is.na(x)))
-  return(tibble(nstudy, p, z=abs(zw)))
+  return(dplyr::tibble(nstudy, p, z=abs(zw)))
 }
 
-#' Identify best variant for each region
-#' 
-#' Use the 
-#' 
-#' @param dat Output from `pleiotropy` - `pleiotropy_outliers`
-#' 
-#' @return plot
+#' @description
+#' Identify the best variant for each region by meta-analysing the associations across the populations
+#'
+#' @param method Meta-analysis method, either `"fema"` (fixed effects meta-analysis) or `"zma"` (Z score meta-analysis). Default is `"fema"`.
+#' @param instrument_regions Genomic regions identified by using `x$extract_instrument_regions()`
+#' @param instrument_raw Instruments for the exposures obtained from `x$extract_instruments()`
+#' @param n Sample sizes for each exposure, required for `method = "zma"`. Default is the sample sizes from `x$exposure_metadata`.
+#'
+#' @return Data frame of the selected instruments, also stored in `x$instrument_fema`
 CAMERA$set("public", "fema_regional_instruments", function(method = "fema", instrument_regions = self$instrument_regions, instrument_raw = self$instrument_raw, n=self$exposure_metadata$sample_size) {
-  
+
   stopifnot(method %in% c("fema", "zma"))
   if(method == "zma") {
     stopifnot(!is.null(n))
     stopifnot(all(!is.na(n)))
   }
-  
+
   # remove duplicated ids from instrument_regions
   instrument_regions <- lapply(instrument_regions, \(x) {
     lapply(x, \(y) {
@@ -71,17 +73,17 @@ CAMERA$set("public", "fema_regional_instruments", function(method = "fema", inst
   d <- lapply(instrument_regions, \(x) {
     if(is.null(x)) return(NULL)
     if(nrow(x[[1]]) == 0) return(NULL)
-      
+
       rsidintersect <- Reduce(intersect, lapply(x, \(r) r$rsid))
       x <- lapply(x, \(r) {
         r %>% dplyr::filter(rsid %in% rsidintersect) %>% dplyr::filter(!duplicated(rsid)) %>% dplyr::arrange(rsid)
       })
-      
+
       d <- dplyr::select(x[[1]], chr, position, rsid, ea, nea, rsido, trait)
 
       if(method == "fema") {
         d1 <- fixed_effects_meta_analysis_fast(
-          sapply(x, \(y) y$beta), 
+          sapply(x, \(y) y$beta),
           sapply(x, \(y) y$se)
         )
       } else {
@@ -106,10 +108,10 @@ CAMERA$set("public", "fema_regional_instruments", function(method = "fema", inst
   # Extract best SNPs from regions for each pop
   inst <- lapply(1:nrow(dsel), \(i) {
     lapply(instrument_regions[[dsel$region[i]]], \(p) {
-      
+
       subset(p, rsid == dsel$rsid[i])
-    }) %>% 
-      dplyr::bind_rows() %>% 
+    }) %>%
+      dplyr::bind_rows() %>%
       dplyr::mutate(id=names(instrument_regions[[dsel$region[i]]]))
   }) %>% dplyr::bind_rows() %>%
     dplyr::filter(!duplicated(paste(id, rsid)))
@@ -119,19 +121,25 @@ CAMERA$set("public", "fema_regional_instruments", function(method = "fema", inst
 })
 
 
+#' @description
+#' Plot the associations in a region for each population and for the meta-analysis
+#' @param region Name of the region to plot, i.e. one of `names(x$instrument_regions)`
+#' @param instrument_regions Genomic regions identified by using `x$extract_instrument_regions()`
+#' @param meta_analysis_regions Meta-analysis results for each region obtained from `x$fema_regional_instruments()`
+#' @return Plot
 CAMERA$set("public", "plot_regional_instruments", function(region, instrument_regions=self$instrument_regions, meta_analysis_regions=self$instrument_fema_regions) {
   r <- instrument_regions[[region]]
   d <- meta_analysis_regions[[region]]
   r <- lapply(r, \(y) y %>% dplyr::mutate(z=abs(beta)/se))
   r$fema <- d
-  temp <- lapply(names(r), \(y) r[[y]] %>% dplyr::mutate(pop = y)) %>% dplyr::bind_rows() %>% dplyr::select(position, z, p, pop) %>% mutate(region=region)
+  temp <- lapply(names(r), \(y) r[[y]] %>% dplyr::mutate(pop = y)) %>% dplyr::bind_rows() %>% dplyr::select(position, z, p, pop) %>% dplyr::mutate(region=region)
   th <- temp %>% dplyr::group_by(pop) %>% dplyr::arrange(desc(z)) %>% dplyr::slice_head(n=1) %>% dplyr::ungroup()
   thf <- subset(temp, position==subset(th, pop=="fema")$position)
   ggplot2::ggplot(temp, ggplot2::aes(x=position, y=-log10(p))) +
     ggplot2::geom_point() +
-    ggplot2::geom_segment(data=th, aes(x=position, xend=position, y=0, yend=-log10(p)), colour="pink") +
+    ggplot2::geom_segment(data=th, ggplot2::aes(x=position, xend=position, y=0, yend=-log10(p)), colour="pink") +
     ggplot2::geom_point(data=th, colour="red") +
-    ggplot2::geom_segment(data=thf, aes(x=position, xend=position, y=0, yend=-log10(p)), colour="grey") +
+    ggplot2::geom_segment(data=thf, ggplot2::aes(x=position, xend=position, y=0, yend=-log10(p)), colour="grey") +
     ggplot2::geom_point(data=thf, colour="blue") +
     ggplot2::facet_grid(pop ~ region)
 })

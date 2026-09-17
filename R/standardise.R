@@ -1,10 +1,5 @@
 #' @description
-#' The function standardise the betas and SEs for the instruments-exposure/outcome associations when unit informaiton is not matched across the populations. In case of large differences in genetic effects observed between the populations (e.g. due to sample size difference), the function scales the betas and SEs.
-#' @param dat Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_maxz, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
-#' @param standardise_unit Use this option if unit information is not matched.
-#' @param standardise_scale Use this option if genetic effects are substantially different due to study power.
-#' @param scaling_method Choose the methods to obtain scaling units (MR estimates of exposure 1 and exposure 2 or outcome 1 and outcome 2). Default is "simple_mode".
-#' @return Data frame in x$standardised_instrument_raw; x$standardised_instrument_maxz; x$standardised_instrument_susie; x$standardised_instrument_paintor; x$standardised_instrument_mscaviar; x$standardised_outcome
+#' This function standardises the betas and SEs for the instruments-exposure/outcome associations when unit information is not matched across the populations. In case of large differences in genetic effects observed between the populations (e.g. due to sample size difference), the function scales the betas and SEs.
 CAMERA$set("public", "standardise_data", function(dat = self$instrument_raw, standardise_unit = FALSE, standardise_scale = FALSE, scaling_method = "simple_mode") {
   if (standardise_unit == TRUE) {
     if (!any(names(dat) %in% c("beta.outcome"))) {
@@ -165,8 +160,6 @@ CAMERA$set("public", "standardise_data", function(dat = self$instrument_raw, sta
   invisible(self)
 })
 
-#' @importFrom dplyr group_by mutate
-#' @importFrom tidyr replace_na
 CAMERA$set("private", "sd_standardise", function(dat = dat) {
   d <- dat %>%
     dplyr::group_by(id) %>%
@@ -187,8 +180,6 @@ CAMERA$set("private", "sd_standardise", function(dat = dat) {
 })
 
 
-#' @importFrom dplyr mutate group_by bind_rows
-#' @importFrom ieugwasr afl2_rsid
 CAMERA$set("private", "allele_frequency", function(dat = dat) {
   if (!any(names(dat) %in% c("beta.outcome"))) {
     dat <- dat %>%

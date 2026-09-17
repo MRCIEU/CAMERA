@@ -13,14 +13,15 @@ knitr::opts_chunk$set(
   comment = "#>", 
   cache=TRUE,
   eval=TRUE,
-  warning=FALSE
+  warning=FALSE,
+  fig.width=7,
+  fig.height=5
 )
 ```
 
 ```{r setup}
 library(CAMeRa)
 ```
-
 
 ## Introduction
 
@@ -54,14 +55,16 @@ traits <- TwoSampleMR::available_outcomes()
 
 You can also browse the available traits here: https://gwas.mrcieu.ac.uk/. Also see other vignettes on this site about how you can use local summary statistics instead.
 
+Querying the OpenGWAS API requires an access token, see the [ieugwasr guide](https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication) for how to obtain and set one up. The examples in this vignette make many API queries and so may use up a large part of your [allowance](https://api.opengwas.io/api/#allowance). To keep this vignette fast to build, the code chunks that query the API are not run here, instead the results are loaded from an example object that ships with the package.
+
 Once you obtain the study IDs for the exposure and the outcome, open R6 class environment to run CAMERA. The minimum information required for CAMERA is the following:
 
 * Summary statistics for the exposure and the outcome
 * Population information 
-* Plink (ver.1.90)
+* Plink (version 1.90)
 * LD reference data 
 
-Plink (ver.1.90) and LD reference data are required to identify instruments that can be used for both populations. LD reference data can be accessed from: http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz.
+Plink (version 1.90) and LD reference data are required to identify instruments that can be used for both populations. LD reference data can be accessed from: http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz.
 
 
 ```{r, eval=FALSE}
@@ -97,7 +100,7 @@ rm(x1)
 
 ## Check phenotype scales across ancestries
 
-Make sure that the exposures/outcomes are matched across the populations. The different populations should have the same exposure-outcome pair, with exposure and outcome traits measured in the same way and with the same units. Also, instrument-trait associations should be consistent between the populations (e.g. how similar SNP-BMI association in EUR to SNP-BMI assocation in EAS). You can check this as follows:
+Make sure that the exposures/outcomes are matched across the populations. The different populations should have the same exposure-outcome pair, with exposure and outcome traits measured in the same way and with the same units. Also, instrument-trait associations should be consistent between the populations (e.g. how similar SNP-BMI association in EUR to SNP-BMI association in EAS). You can check this as follows:
 
 ```{r, eval=FALSE}
 x$check_phenotypes(ids=x$exposure_ids)
@@ -161,7 +164,7 @@ We will perform an inverse variance weighted fixed effects MR method within popu
 x$cross_estimate()
 ```
 
-Here we see a very consistent assocation across all ancestries. Note that the `All` estimate is slightly more precisely estimated than any of the others because it is combining similar estimates.
+Here we see a very consistent association across all ancestries. Note that the `All` estimate is slightly more precisely estimated than any of the others because it is combining similar estimates.
 
 We can visualise the estimates:
 
@@ -191,7 +194,7 @@ x$fema_regional_instruments(method="zma") %>% str()
 
 Example
 
-```{r}
+```{r, fig.height=8}
 x$plot_regional_instruments(names(x$instrument_regions)[3])
 ```
 
@@ -313,7 +316,7 @@ x$estimate_instrument_heterogeneity_per_variant()
 x$instrument_heterogeneity_per_variant %>% dplyr::filter(Qfdr < 0.05)
 ```
 
-Next perform MR GxE (may take a couple of minutes while bootstraping standard errors)
+Next perform MR GxE (may take a couple of minutes while bootstrapping standard errors)
 
 ```{r}
 x$mrgxe()
@@ -322,7 +325,7 @@ x$mrgxe_res
 
 This is the distribution of the estimate of the pleiotropic effect of each SNP that showed heterogeneity
 
-```{r}
+```{r, fig.height=12}
 x$mrgxe_plot()
 ```
 

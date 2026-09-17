@@ -14,13 +14,17 @@ generate_vid <- function(d, ea = "ea", nea = "nea", eaf = "eaf", beta = "beta", 
 #' @description
 #'  This function searches for GWAS significant SNPs (P < 5E-8) for a specified set of the exposures. This method is equivalant to the instrumnet extraction method for Multivariable MR. Reference here: https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.html.
 #' @param exposure_ids ID for the exposure. Default is x$exposure_ids.
+#' @param ... Further arguments passed to `TwoSampleMR::mv_extract_exposures()`
 #' @return Data frame in x$instrument_raw
-#' @importFrom ieugwasr variants_rsid
 CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposure_ids, ...) {
   suppressMessages(instrument_raw <- TwoSampleMR::mv_extract_exposures(exposure_ids, ...))
   # Add chromosome and position
   suppressMessages(instrument_raw <- TwoSampleMR::add_metadata(instrument_raw, cols = c("sample_size", "ncase", "ncontrol", "unit", "sd")))
-  suppressMessages(instrument_raw <- ieugwasr::variants_rsid(unique(instrument_raw$SNP)) %>%
+  variants <- suppressMessages(ieugwasr::variants_rsid(unique(instrument_raw$SNP)))
+  if (!is.data.frame(variants) || !all(c("query", "chr", "pos") %in% names(variants))) {
+    stop("Could not retrieve chromosome and position for the instruments from the OpenGWAS API using ieugwasr::variants_rsid(). The API may be temporarily unavailable or you may have used up your allowance, please try again later. See https://api.opengwas.io/api/#allowance")
+  }
+  suppressMessages(instrument_raw <- variants %>%
     dplyr::select(SNP = query, chr, position = pos) %>%
     dplyr::inner_join(., instrument_raw, by = "SNP") %>%
     dplyr::arrange(id.exposure, chr, position))
@@ -40,7 +44,7 @@ CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposur
   id <- list()
   id <- t$id[t$`sum(p < 5e-08)` < 1]
   if (length(id) > 0) {
-    message(paste0("Caution: No SNPs reached genome-wide significance threshold for the trait in ", id))
+    message(paste0("Caution: No SNPs reached genome-wide significance threshold for the trait in ", paste(id, collapse = ", ")))
   }
   self$instrument_raw <- generate_vid(instrument_raw)
   invisible(self)
@@ -54,7 +58,6 @@ CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposur
 #' @param instrument_raw A set of instruments obtained from \code{x$extract_instruments()}
 #' @param exposure_ids ID for the exposure. Default is x$exposure_ids.
 #' @return Data frame in x$instrument_regions
-#' @importFrom ieugwasr associations
 CAMERA$set("public", "extract_instrument_regions", function(radius = self$radius, instrument_raw = self$instrument_raw, exposure_ids = self$exposure_ids) {
   # return a list of lists e.g.
   # region1:
@@ -183,7 +186,6 @@ CAMERA$set("public", "scan_regional_instruments", function(instrument_raw = self
 #' @param instruments Use this option to draw a separate plot for the selcted instruments.
 #' @param comparison Use this option to compare the selected instruments by different instrument selection methods in one plot.
 #' @return Plot
-#' @importFrom ggplot2 ggplot aes geom_point facet_grid geom_smooth scale_colour_brewer scale_x_log10 scale_y_log10 xlab ylab
 CAMERA$set("public", "plot_regional_instruments_maxz", function(instrument_region_zscores = self$instrument_region_zscores, instruments = self$instrument_raw, region = 1:min(10, nrow(instruments)), comparison = FALSE) {
   a <- instrument_region_zscores[region]
   a <- names(a) %>%
@@ -224,19 +226,17 @@ CAMERA$set("public", "plot_regional_instruments_maxz", function(instrument_regio
   p
 })
 
-#' Generate LD matrices for instrument regions
-#'
 #' @description
+#' Generate LD matrices for instrument regions.
 #' If we want to do fine mapping we need to get an LD matrix for the whole region (for each population)
 #' We then need to harmonise the LD matrix to the summary data, and the summary datasets to each other
-#' The fuction obtains an LD matrix for the selected genomic regions.
+#' The function obtains an LD matrix for the selected genomic regions.
 #'
 #' @param instrument_regions Genomic regions identified by using \code{x$extract_instrument_regions()}
 #' @param bfiles Location of LD reference files for each population (Download from: http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz)
 #' @param pops Ancestry information for each population (i.e. AFR, AMR, EUR, EAS, SAS)
-#' @param plink Location of executable plink (ver.1.90 is recommended)
+#' @param plink Location of executable plink (version 1.90 is recommended)
 #' @return Data frame of LD matrix (x$ld_matrices)
-#' @importFrom ieugwasr ld_matrix
 CAMERA$set("public", "regional_ld_matrices", function(instrument_regions = self$instrument_regions, bfiles = self$bfiles, pops = self$pops, plink = self$plink) {
   if (!is.null(bfiles)) {
     stopifnot(length(bfiles) == length(self$exposure_ids))

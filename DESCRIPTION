@@ -1,6 +1,6 @@
 Package: CAMeRa
 Title: CAMeRa (Cross Ancestral Mendelian Randomisation)
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Yoonsu", "Cho", , "yoonsu.cho@bristol.ac.uk", role = "aut"),
     person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = c("aut", "cre"),
@@ -11,33 +11,34 @@ Authors@R: c(
 Description: CAMERA estimates joint causal effect in multiple ancestries
     and detects pleiotropy via the zero relevance model.
 License: MIT + file LICENSE
+URL: https://github.com/MRCIEU/CAMERA, https://mrcieu.github.io/CAMERA/
+BugReports: https://github.com/MRCIEU/CAMERA/issues/
 Depends: 
     R (>= 4.1.0)
-Imports: 
+Imports:
     dplyr,
-    ggplot2,
-    ieugwasr (>= 0.1.8),
+    ggplot2 (>= 3.3.0),
+    ieugwasr (>= 1.1.0),
     magrittr,
     tidyr
 Suggests: 
-    RadialMR,
-    winnerscurse,
-    TwoSampleMR,
-    lavaan,
-    susieR,
     genetics.binaRies,
     knitr,
+    lavaan,
+    RadialMR,
     rmarkdown,
-    testthat (>= 3.0.0)
+    susieR,
+    testthat (>= 3.0.0),
+    TwoSampleMR,
+    winnerscurse
 VignetteBuilder: 
     knitr
 Remotes:
     amandaforde/winnerscurse,
-    explodecomputer/genetics.binaRies,
-    MRCIEU/ieugwasr,
+    MRCIEU/genetics.binaRies,
     MRCIEU/TwoSampleMR,
     WSpiller/RadialMR
+Config/roxygen2/markdown: TRUE
+Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1

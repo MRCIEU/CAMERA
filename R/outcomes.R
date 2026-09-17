@@ -38,11 +38,12 @@ CAMERA$set("public", "make_outcome_data", function(exp = self$instrument_raw, p_
 # - finemapped hits from susie_finemap_regions
 # - finemapped hits from mscaviar_finemap_regions
 #' @description
-#' The function extracts summary statistics of given a list of instruments and the outcomes
+#' The function extracts summary statistics of given a list of instruments and the outcomes from local data
 #' @param exp Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_fema, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
+#' @param out Outcome data for each instrument region. Default is x$instrument_outcome_regions.
 #' @param p_exp Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.
 #' @return Data frame in x$instrument_outcome
-CAMERA$set("public", "make_outcome_local", function(exp = self$instrument_raw, out = self$instrument_outcome_regions, p_exp = 0.05 / nreow(exp)) {
+CAMERA$set("public", "make_outcome_local", function(exp = self$instrument_raw, out = self$instrument_outcome_regions, p_exp = 0.05 / nrow(exp)) {
   out <- lapply(out, \(x) {
     lapply(x, \(y) {
       subset(y, rsid %in% exp$rsid)
@@ -52,7 +53,6 @@ CAMERA$set("public", "make_outcome_local", function(exp = self$instrument_raw, o
 })
 
 
-#' Harmonise exposure and outcome datasets
 #' @description
 #' This function harmonises the alleles and effects between the exposure and outcome.
 #' @param exp Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_fema, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
@@ -75,8 +75,9 @@ CAMERA$set("public", "harmonise", function(exp = self$instrument_raw, out = self
   print(str(dat))
 })
 
+#' @description
 #' Generate summary of exposure, outcome and population metadata
-#' 
+#'
 #' @return data frame
 CAMERA$set("public", "set_summary", function() {
   self$summary <- dplyr::tibble(

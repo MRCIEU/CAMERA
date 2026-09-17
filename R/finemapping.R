@@ -129,8 +129,6 @@ CAMERA$set("public", "susie_finemap_regions", function(dat = self$instrument_reg
 })
 
 
-#' @importFrom dplyr bind_rows mutate arrange
-#' @importFrom dplyr tibble
 CAMERA$set("private", "susie_overlaps", function(su1, su2) {
   l <- list()
   k <- 1

@@ -1,21 +1,21 @@
 #' Estimate expected vs observed replication of effects between discovery and replication datasets
-#' 
+#'
 #' Taken from Okbay et al 2016. Under the assumption that all discovery effects are unbiased, what fraction of associations would replicate in the replication dataset, given the differential power of the discovery and replication datasets.
 #' Uses standard error of the replication dataset to account for differences in sample size and distribution of independent variable
-#' 
+#'
 #' @param b_disc Vector of discovery betas
 #' @param b_rep Vector of replication betas
 #' @param se_disc Vector of discovery standard errors
 #' @param se_rep Vector of replication standard errors
 #' @param alpha Nominal replication significance threshold
-#' 
+#'
 #' @return List of results
 #' - res: aggregate expected replication rate vs observed replication rate
 #' - variants: per variant expected replication rates
 prop_overlap <- function(b_disc, b_rep, se_disc, se_rep, alpha) {
-  p_sign <- pnorm(-abs(b_disc) / se_disc) * pnorm(-abs(b_disc) / se_rep) + ((1 - pnorm(-abs(b_disc) / se_disc)) * (1 - pnorm(-abs(b_disc) / se_rep)))
-  p_sig <- pnorm(-abs(b_disc) / se_rep + qnorm(alpha / 2)) + (1 - pnorm(-abs(b_disc) / se_rep - qnorm(alpha / 2)))
-  p_rep <- pnorm(abs(b_rep) / se_rep, lower.tail = FALSE)
+  p_sign <- stats::pnorm(-abs(b_disc) / se_disc) * stats::pnorm(-abs(b_disc) / se_rep) + ((1 - stats::pnorm(-abs(b_disc) / se_disc)) * (1 - stats::pnorm(-abs(b_disc) / se_rep)))
+  p_sig <- stats::pnorm(-abs(b_disc) / se_rep + stats::qnorm(alpha / 2)) + (1 - stats::pnorm(-abs(b_disc) / se_rep - stats::qnorm(alpha / 2)))
+  p_rep <- stats::pnorm(abs(b_rep) / se_rep, lower.tail = FALSE)
   res <- dplyr::tibble(
     nsnp = length(b_disc),
     metric = c("Sign", "Sign", "P-value", "P-value"),
@@ -26,9 +26,9 @@ prop_overlap <- function(b_disc, b_rep, se_disc, se_rep, alpha) {
       dplyr::do({
         x <- .
         if(.$nsnp[1] > 0) {
-          bt <- binom.test(
-            x=.$value[.$datum == "Observed"], 
-            n=.$nsnp[1], 
+          bt <- stats::binom.test(
+            x=.$value[.$datum == "Observed"],
+            n=.$nsnp[1],
             p=.$value[.$datum == "Expected"] / .$nsnp[1]
           )$p.value
           x$pdiff <- bt
@@ -43,6 +43,7 @@ prop_overlap <- function(b_disc, b_rep, se_disc, se_rep, alpha) {
 #' @param instrument Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_maxz, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
 #' @param alpha Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.
 #' @param method IVW or Simple MODE
+#' @param outlier_removal Remove outliers identified by radial IVW MR before estimating heterogeneity. Default is `FALSE`.
 #' @return Table of the result
 CAMERA$set("public", "instrument_heterogeneity", function(instrument = self$instrument_raw, alpha = "bonferroni", method = "ivw", outlier_removal = FALSE) {
   if (alpha == "bonferroni") {
@@ -215,7 +216,7 @@ CAMERA$set("public", "estimate_instrument_specificity", function(instrument, alp
 })
 
 #' @description
-#' The fuction explains what contributes to the replication of gene-trait association between the populations, considering LD structure.
+#' The function explains what contributes to the replication of gene-trait association between the populations, considering LD structure.
 #' @param instrument Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_maxz, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
 #' @param ld LD matrix obtained by using \code{x$regional_ld_matrices()}
 #' @return Table of the regression result

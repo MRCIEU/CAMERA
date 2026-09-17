@@ -31,7 +31,7 @@ List
 }
 }
 \description{
-For a single variant estiamted in different sub groups.
+For a single variant estimated in different sub groups.
 }
 \details{
 Estimate the degree of pleiotropy using MR GxE. This method uses a negative control type approach based on an assumption that the instrument-exposure association is uncorrelated with the pleiotropic effect. Therefore, as the instrument-exposure association reduces in magnitude, the effect on the outcome will reduce towards an intercept term which represents the pleiotropic effect.

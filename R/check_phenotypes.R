@@ -7,16 +7,29 @@ CAMERA$set("public", "check_phenotypes", function(ids = self$exposure_ids) {
     tryCatch(
       {
         suppressMessages(exp <- unique(TwoSampleMR::extract_instruments(outcomes = i)))
+        if (is.null(exp) || nrow(exp) == 0) {
+          message("No genome-wide significant instruments found for ", i, "; skipping it as the reference")
+          return(NULL)
+        }
         other_ids <- ids[!ids %in% i]
 
         o <- lapply(other_ids, function(j) {
           suppressMessages(out <- TwoSampleMR::extract_outcome_data(snps = exp$SNP, outcomes = j))
+          if (is.null(out) || nrow(out) == 0) {
+            message("None of the instruments for ", i, " were found in ", j, "; skipping")
+            return(NULL)
+          }
           suppressMessages(d <- TwoSampleMR::harmonise_data(exp, out))
 
           res <- suppressMessages(TwoSampleMR::mr(d, method = "mr_ivw")) %>%
             {
               dplyr::tibble(Reference = i, Replication = j, nsnp = .$nsnp, agreement = .$b, se = .$se, pval = .$pval)
             }
+
+          if (nrow(res) == 0) {
+            message("Fewer than 2 SNPs available to compare ", i, " and ", j, "; skipping")
+            return(NULL)
+          }
 
           message(paste0("Instrument associations between ", i, " and ", j, " is ", round(res$agreement, 3), "; NSNP=", res$nsnp))
 
@@ -40,7 +53,8 @@ CAMERA$set("public", "check_phenotypes", function(ids = self$exposure_ids) {
         return(o %>% dplyr::bind_rows())
       },
       error = function(e) {
-        cat("ERROR :", conditionMessage(e), "\n")
+        message("Error checking ", i, ": ", conditionMessage(e))
+        NULL
       }
     )
   })
