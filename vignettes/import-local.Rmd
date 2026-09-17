@@ -34,19 +34,23 @@ Examples of these datasets can be seen in the following file:
 
 ```{r}
 load(system.file(package="CAMeRa", "extdata/example-local.rdata"))
-instrument_raw
+head(instrument_raw)
 ```
 
 ```{r}
-instrument_outcome
+head(instrument_outcome)
+```
+
+Each region contains a data frame for each population, e.g. the first few rows of the first population in the first region:
+
+```{r}
+names(instrument_regions[[1]])
+head(instrument_regions[[1]][[1]])
 ```
 
 ```{r}
-instrument_regions[[1]]
-```
-
-```{r}
-instrument_outcome_regions[[1]]
+names(instrument_outcome_regions[[1]])
+head(instrument_outcome_regions[[1]][[1]])
 ```
 
 For example scripts on how these data were generated see https://github.com/yoonsucho/CAMERA_analysis/tree/main/scripts/ldl_stroke_analysis
