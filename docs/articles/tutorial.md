@@ -638,10 +638,7 @@ Look at the overall relationship of outlier deviations across
 populations
 
 \
-`x``$``plot_pleiotropy``(``)`\
-`` #> Joining with `by = join_by(pop1)` ``\
-`` #> Joining with `by = join_by(pop2, SNP)` ``\
-`` #> `geom_smooth()` using formula = 'y ~ x' ``
+`x``$``plot_pleiotropy``(``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-30-1.png)
 
@@ -780,8 +777,7 @@ You’d expect to see a slope reflecting the causal effect estimate with
 the intercept reflecting the pleiotropic association.
 
 \
-`x``$``mrgxe_plot_variant``(``)`\
-`` #> `geom_smooth()` using formula = 'y ~ x' ``
+`x``$``mrgxe_plot_variant``(``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-37-1.png)
 
