@@ -11,6 +11,9 @@ Authors@R: c(
 Description: CAMERA estimates joint causal effect in multiple ancestries
     and detects pleiotropy via the zero relevance model.
 License: MIT + file LICENSE
+URL: https://github.com/MRCIEU/CAMERA,
+    https://mrcieu.github.io/CAMERA/
+BugReports: https://github.com/MRCIEU/CAMERA/issues/
 Depends: 
     R (>= 4.1.0)
 Imports:
