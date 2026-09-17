@@ -8,50 +8,51 @@
 A simple wrapper function for importing data from local files for use with the CAMERA class.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
 
-\item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
+    \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
 
-\item{\code{mc.cores}}{The number of processor cores to use}
+    \item{\code{mc.cores}}{The number of processor cores to use}
 
-\item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
+    \item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
 
-\item{\code{minmaf}}{Minimum allele frequency per dataset}
+    \item{\code{minmaf}}{Minimum allele frequency per dataset}
 
-\item{\code{pthresh}}{P-value threshold for instrument inclusion}
+    \item{\code{pthresh}}{P-value threshold for instrument inclusion}
 
-\item{\code{instrument_raw}}{A data frame of pooled instruments across all ancestries, that has been extracted from each ancestry for the exposure traits}
+    \item{\code{instrument_raw}}{A data frame of pooled instruments across all ancestries, that has been extracted from each ancestry for the exposure traits}
 
-\item{\code{instrument_outcome}}{Instruments in \code{instrument_raw} extracted from the outcome datasets}
+    \item{\code{instrument_outcome}}{Instruments in \code{instrument_raw} extracted from the outcome datasets}
 
-\item{\code{instrument_regions}}{Named list of data frames of length number of unique instruments in \code{instrument_raw}. Names of each item are the instruments. Each item is a list of regional extracts around the instrument from each population exposure study.}
+    \item{\code{instrument_regions}}{Named list of data frames of length number of unique instruments in \code{instrument_raw}. Names of each item are the instruments. Each item is a list of regional extracts around the instrument from each population exposure study.}
 
-\item{\code{instrument_outcome_regions}}{As per \code{instrument_regions} but for the outcome datasets.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{instrument_outcome_regions}}{As per \code{instrument_regions} but for the outcome datasets.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-CAMERA_local-new}{\code{CAMERA_local$new()}}
-\item \href{#method-CAMERA_local-standardise}{\code{CAMERA_local$standardise()}}
-\item \href{#method-CAMERA_local-read_file}{\code{CAMERA_local$read_file()}}
-\item \href{#method-CAMERA_local-pool_tophits}{\code{CAMERA_local$pool_tophits()}}
-\item \href{#method-CAMERA_local-organise_data}{\code{CAMERA_local$organise_data()}}
-\item \href{#method-CAMERA_local-fixed_effects_meta_analysis_fast}{\code{CAMERA_local$fixed_effects_meta_analysis_fast()}}
-\item \href{#method-CAMERA_local-organise}{\code{CAMERA_local$organise()}}
-\item \href{#method-CAMERA_local-clone}{\code{CAMERA_local$clone()}}
-}
+  \itemize{
+    \item \href{#method-CAMERA_local-initialize}{\code{CAMERA_local$new()}}
+    \item \href{#method-CAMERA_local-standardise}{\code{CAMERA_local$standardise()}}
+    \item \href{#method-CAMERA_local-read_file}{\code{CAMERA_local$read_file()}}
+    \item \href{#method-CAMERA_local-pool_tophits}{\code{CAMERA_local$pool_tophits()}}
+    \item \href{#method-CAMERA_local-organise_data}{\code{CAMERA_local$organise_data()}}
+    \item \href{#method-CAMERA_local-fixed_effects_meta_analysis_fast}{\code{CAMERA_local$fixed_effects_meta_analysis_fast()}}
+    \item \href{#method-CAMERA_local-organise}{\code{CAMERA_local$organise()}}
+    \item \href{#method-CAMERA_local-clone}{\code{CAMERA_local$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-CAMERA_local-new"></a>}}
-\if{latex}{\out{\hypertarget{method-CAMERA_local-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new dataset and initialise an R interface
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$new(
+\if{html}{\out{<a id="method-CAMERA_local-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-CAMERA_local-initialize}{}}}
+\subsection{\code{CAMERA_local$new()}}{
+  Create a new dataset and initialise an R interface
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$new(
   metadata,
   ld_ref,
   plink_bin,
@@ -59,38 +60,33 @@ Create a new dataset and initialise an R interface
   radius = 25000,
   pthresh = 5e-08,
   minmaf = 0.01
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
+      \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
+      \item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
+      \item{\code{mc.cores}}{Number of cores to use}
+      \item{\code{radius}}{Genomic window size to extract SNPs}
+      \item{\code{radius}}{Default 250000}
+      \item{\code{pthresh}}{P-value threshold for instrument inclusion}
+      \item{\code{minmaf}}{Minimum allele frequency per dataset}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
-
-\item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
-
-\item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
-
-\item{\code{mc.cores}}{Number of cores to use}
-
-\item{\code{radius}}{Genomic window size to extract SNPs}
-
-\item{\code{radius}}{Default 250000}
-
-\item{\code{pthresh}}{P-value threshold for instrument inclusion}
-
-\item{\code{minmaf}}{Minimum allele frequency per dataset}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-standardise"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-standardise}{}}}
-\subsection{Method \code{standardise()}}{
-Standardise the allele coding
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$standardise(
+\subsection{\code{CAMERA_local$standardise()}}{
+  Standardise the allele coding
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$standardise(
   d,
   ea_col = "ea",
   oa_col = "oa",
@@ -99,93 +95,85 @@ Standardise the allele coding
   chr_col = "chr",
   pos_col = "pos",
   vid_col = "vid"
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{d}}{data.frame}
+      \item{\code{ea_col}}{Column name for effect allele}
+      \item{\code{oa_col}}{Column name for other allele}
+      \item{\code{beta_col}}{Column name containing beta coefficients}
+      \item{\code{eaf_col}}{Column name containing allele frequency for effect allele}
+      \item{\code{chr_col}}{Column name containing chromosome}
+      \item{\code{pos_col}}{Column name containing position}
+      \item{\code{vid_col}}{Column name containing variant ID}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{d}}{data.frame}
-
-\item{\code{ea_col}}{Column name for effect allele}
-
-\item{\code{oa_col}}{Column name for other allele}
-
-\item{\code{beta_col}}{Column name containing beta coefficients}
-
-\item{\code{eaf_col}}{Column name containing allele frequency for effect allele}
-
-\item{\code{chr_col}}{Column name containing chromosome}
-
-\item{\code{pos_col}}{Column name containing position}
-
-\item{\code{vid_col}}{Column name containing variant ID}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-read_file"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-read_file}{}}}
-\subsection{Method \code{read_file()}}{
-Function to read in a file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$read_file(m, minmaf = 0.01)}\if{html}{\out{</div>}}
+\subsection{\code{CAMERA_local$read_file()}}{
+  Function to read in a file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$read_file(m, minmaf = 0.01)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{m}}{File object}
+      \item{\code{minmaf}}{Minimum allele frequency per dataset}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{m}}{File object}
-
-\item{\code{minmaf}}{Minimum allele frequency per dataset}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-pool_tophits"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-pool_tophits}{}}}
-\subsection{Method \code{pool_tophits()}}{
-Pool the top hits
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$pool_tophits(
+\subsection{\code{CAMERA_local$pool_tophits()}}{
+  Pool the top hits
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$pool_tophits(
   rawdat,
   tophits,
   metadata,
   radius = 250000,
   pthresh = 5e-08,
   mc.cores = 10
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{rawdat}}{The raw data}
+      \item{\code{tophits}}{The top hits}
+      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
+      \item{\code{radius}}{Genomic window size to extract SNPs}
+      \item{\code{radius}}{Default 250000}
+      \item{\code{pthresh}}{P-value threshold for instrument inclusion}
+      \item{\code{mc.cores}}{Number of cores to use}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{rawdat}}{The raw data}
-
-\item{\code{tophits}}{The top hits}
-
-\item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
-
-\item{\code{radius}}{Genomic window size to extract SNPs}
-
-\item{\code{radius}}{Default 250000}
-
-\item{\code{pthresh}}{P-value threshold for instrument inclusion}
-
-\item{\code{mc.cores}}{Number of cores to use}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-organise_data"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-organise_data}{}}}
-\subsection{Method \code{organise_data()}}{
-A function to organise the data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$organise_data(
+\subsection{\code{CAMERA_local$organise_data()}}{
+  A function to organise the data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$organise_data(
   metadata = self$metadata,
   plink_bin = self$plink_bin,
   ld_ref = self$ld_ref,
@@ -193,75 +181,74 @@ A function to organise the data
   minmaf = self$minmaf,
   radius = self$radius,
   mc.cores = self$mc.cores
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
+      \item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
+      \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
+      \item{\code{pthresh}}{P-value threshold for instrument inclusion}
+      \item{\code{minmaf}}{Minimum allele frequency per dataset}
+      \item{\code{radius}}{Genomic window size to extract SNPs}
+      \item{\code{radius}}{Default 250000}
+      \item{\code{mc.cores}}{Number of cores to use}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
-
-\item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
-
-\item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
-
-\item{\code{pthresh}}{P-value threshold for instrument inclusion}
-
-\item{\code{minmaf}}{Minimum allele frequency per dataset}
-
-\item{\code{radius}}{Genomic window size to extract SNPs}
-
-\item{\code{radius}}{Default 250000}
-
-\item{\code{mc.cores}}{Number of cores to use}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-fixed_effects_meta_analysis_fast"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-fixed_effects_meta_analysis_fast}{}}}
-\subsection{Method \code{fixed_effects_meta_analysis_fast()}}{
-A function to perform fixed effect meta-analysis
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$fixed_effects_meta_analysis_fast(beta_mat, se_mat)}\if{html}{\out{</div>}}
+\subsection{\code{CAMERA_local$fixed_effects_meta_analysis_fast()}}{
+  A function to perform fixed effect meta-analysis
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$fixed_effects_meta_analysis_fast(beta_mat, se_mat)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{beta_mat}}{Matrix of beta coefficients}
+      \item{\code{se_mat}}{Matrix of SEs}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{beta_mat}}{Matrix of beta coefficients}
-
-\item{\code{se_mat}}{Matrix of SEs}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-organise"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-organise}{}}}
-\subsection{Method \code{organise()}}{
-Organise the output
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$organise()}\if{html}{\out{</div>}}
+\subsection{\code{CAMERA_local$organise()}}{
+  Organise the output
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$organise()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CAMERA_local$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{CAMERA_local$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CAMERA_local$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

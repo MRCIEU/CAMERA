@@ -9,11 +9,21 @@
 \description{
 CAMERA estimates joint causal effect in multiple ancestries and detects pleiotropy via the zero relevance model.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/MRCIEU/CAMERA}
+  \item \url{https://mrcieu.github.io/CAMERA/}
+  \item Report bugs at \url{https://github.com/MRCIEU/CAMERA/issues/}
+}
+
+}
 \author{
 \strong{Maintainer}: Gibran Hemani \email{g.hemani@bristol.ac.uk} (\href{https://orcid.org/0000-0003-0920-1055}{ORCID})
 
 Authors:
 \itemize{
+  \item Gibran Hemani \email{g.hemani@bristol.ac.uk} (\href{https://orcid.org/0000-0003-0920-1055}{ORCID})
   \item Yoonsu Cho \email{yoonsu.cho@bristol.ac.uk}
   \item Tom Palmer \email{tom.palmer@bristol.ac.uk} (\href{https://orcid.org/0000-0003-4655-4511}{ORCID})
 }
