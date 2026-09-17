@@ -45,7 +45,7 @@ CAMERA$set("public", "plot_cross_estimate", function(est=self$mrres, qj_alpha=0.
   est$what[est$pops=="All"] <- "All"
   p <- ggplot2::ggplot(est, ggplot2::aes(x=Estimate, y=pops)) +
   ggplot2::geom_point(ggplot2::aes(colour=Qjpval < qj_alpha)) +
-  ggplot2::geom_errorbarh(ggplot2::aes(colour=Qjpval < qj_alpha, xmin=Estimate - 1.96 * `Std. Error`, xmax=Estimate + 1.96 * `Std. Error`), height=0.1) +
+  ggplot2::geom_errorbar(ggplot2::aes(colour=Qjpval < qj_alpha, xmin=Estimate - 1.96 * `Std. Error`, xmax=Estimate + 1.96 * `Std. Error`), width=0.1, orientation="y") +
   ggplot2::facet_grid(what ~ ., scale="free_y", space="free_y") +
   ggplot2::geom_vline(xintercept=0, linetype="dotted") +
   ggplot2::labs(y="", colour=paste0("Heterogeneity\npval < ", qj_alpha))

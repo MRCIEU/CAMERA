@@ -112,7 +112,7 @@ CAMERA$set("public", "mrgxe_plot", function(mrgxe_res = self$mrgxe_res) {
         dplyr::arrange(a) %>%
         ggplot2::ggplot(., ggplot2::aes(x=a, y=SNP)) +
             ggplot2::geom_point() +
-            ggplot2::geom_errorbarh(ggplot2::aes(xmin=a-1.96*a_se, xmax=a+1.96*a_se), height=0) +
+            ggplot2::geom_errorbar(ggplot2::aes(xmin=a-1.96*a_se, xmax=a+1.96*a_se), width=0, orientation="y") +
             ggplot2::geom_vline(xintercept=0, linetype="dotted") +
             ggplot2::scale_y_discrete(limits=dplyr::arrange(mrgxe_res, a)$SNP)
 })
@@ -132,7 +132,7 @@ CAMERA$set("public", "mrgxe_plot_variant", function(variant = self$mrgxe_res %>%
         ggplot2::ggplot(., ggplot2::aes(x=beta.x, y=beta.y)) +
         ggplot2::geom_point() +
         ggplot2::geom_errorbar(ggplot2::aes(ymin=beta.y-1.96*se.y, ymax=beta.y+1.96*se.y), colour="grey", width=0) +
-        ggplot2::geom_errorbarh(ggplot2::aes(xmin=beta.x-1.96*se.x, xmax=beta.x+1.96*se.x), colour="grey", height=0) +
+        ggplot2::geom_errorbar(ggplot2::aes(xmin=beta.x-1.96*se.x, xmax=beta.x+1.96*se.x), colour="grey", width=0, orientation="y") +
         ggplot2::facet_wrap(~ SNP, scale="free") +
         ggplot2::geom_smooth(method="lm") +
         ggplot2::geom_vline(xintercept=0, linetype="dotted") +

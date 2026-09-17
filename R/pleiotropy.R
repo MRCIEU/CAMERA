@@ -97,7 +97,7 @@ CAMERA$set("public", "plot_pleiotropy", function(dat = self$pleiotropy_outliers)
   ggplot2::geom_vline(xintercept=0, linetype="dotted") +
   ggplot2::geom_hline(yintercept=0, linetype="dotted") +
   ggplot2::geom_errorbar(ggplot2::aes(ymin=dif2-1.96*dif2.se, ymax=dif2+1.96*dif2.se), width=0) +
-  ggplot2::geom_errorbarh(ggplot2::aes(xmin=dif1-1.96*dif1.se, xmax=dif1+1.96*dif1.se), height=0) +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin=dif1-1.96*dif1.se, xmax=dif1+1.96*dif1.se), width=0, orientation="y") +
   ggplot2::facet_grid(pop2 ~ pop1) +
   ggplot2::geom_smooth(method="lm") +
   ggplot2::labs(x="Deviation from MR estimate (pop 1)", y="Deviation from MR estimate (pop 2)")
@@ -126,7 +126,7 @@ CAMERA$set("public", "plot_pleiotropy_heterogeneity", function(dat = self$pleiot
     ggplot2::ggplot(., ggplot2::aes(x=dif, y=pop)) +
     ggplot2::geom_vline(xintercept=0, linetype="dotted") +
     ggplot2::geom_point(ggplot2::aes(colour=pop)) +
-    ggplot2::geom_errorbarh(ggplot2::aes(colour=pop, xmin=dif-1.96*dif.se, xmax=dif+1.96*dif.se), height=0) +
+    ggplot2::geom_errorbar(ggplot2::aes(colour=pop, xmin=dif-1.96*dif.se, xmax=dif+1.96*dif.se), width=0, orientation="y") +
     ggplot2::facet_wrap(~ SNP, scale="free_x") +
     ggplot2::labs(x="Deviation from MR estimate", y="Population")
 })
