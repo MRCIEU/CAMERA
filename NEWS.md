@@ -1,6 +1,6 @@
 # CAMeRa 0.1.1
 
-* Various fixes to documentation
+* Various fixes to documentation and vignettes
 
 # CAMeRa 0.1.0
 
