@@ -375,8 +375,7 @@ that the <code>All</code> estimate is slightly more precisely estimated
 than any of the others because it is combining similar estimates.</p>
 <p>We can visualise the estimates:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_cross_estimate</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_cross_estimate</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -503,8 +502,7 @@ instruments</p>
 <p>The precision of the associations are improved because of the
 improved instrument selection.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_cross_estimate</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_cross_estimate</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" alt="" width="672"></p>
 <p>Evaluate instrument specificity. First using heterogeneity</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -668,8 +666,7 @@ populations</p>
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_pleiotropy</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(pop1)`</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(pop2, SNP)`</span></span>
-<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
+<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-30-1.png" class="r-plt" alt="" width="672"></p>
 <p>Identify any variants that showed substantial differences in
 pleiotropy deviations across populations. Note that sometimes the
@@ -677,14 +674,12 @@ pleiotropy deviation estimate is unstable due to the SNP-exposure
 association being very small. Unstable estimates are attempted to be
 removed automatically from the heterogeneity analysis</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_pleiotropy_heterogeneity</span><span class="op">(</span>pthresh<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></span>
-<span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_pleiotropy_heterogeneity</span><span class="op">(</span>pthresh<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-31-1.png" class="r-plt" alt="" width="672"></p>
 <p>No SNPs are showing substantial differences in pleiotropy deviation
 across populations. Plot everything by relaxing the threshold</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_pleiotropy_heterogeneity</span><span class="op">(</span>pthresh<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_pleiotropy_heterogeneity</span><span class="op">(</span>pthresh<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-32-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -772,8 +767,7 @@ standard errors)</p>
 <p>This is the distribution of the estimate of the pleiotropic effect of
 each SNP that showed heterogeneity</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">mrgxe_plot</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">mrgxe_plot</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="" width="672"></p>
 <p>Any evidence of SNPs with substantial heterogeneity?</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
@@ -795,8 +789,7 @@ You’d expect to see a slope reflecting the causal effect estimate with
 the intercept reflecting the pleiotropic association.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">mrgxe_plot_variant</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
-<span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
+<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-37-1.png" class="r-plt" alt="" width="672"></p>
 <p>In this case the associations are very noisy, and it would be
 difficult to justify that they show convincing evidence of the

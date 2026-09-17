@@ -324,8 +324,7 @@ the others because it is combining similar estimates.
 We can visualise the estimates:
 
 \
-`x``$``plot_cross_estimate``(``)`\
-`` #> `height` was translated to `width`. ``
+`x``$``plot_cross_estimate``(``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-13-1.png)
 
@@ -466,8 +465,7 @@ The precision of the associations are improved because of the improved
 instrument selection.
 
 \
-`x``$``plot_cross_estimate``(``)`\
-`` #> `height` was translated to `width`. ``
+`x``$``plot_cross_estimate``(``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-22-1.png)
 
@@ -643,8 +641,7 @@ populations
 `x``$``plot_pleiotropy``(``)`\
 `` #> Joining with `by = join_by(pop1)` ``\
 `` #> Joining with `by = join_by(pop2, SNP)` ``\
-`` #> `geom_smooth()` using formula = 'y ~ x' ``\
-`` #> `height` was translated to `width`. ``
+`` #> `geom_smooth()` using formula = 'y ~ x' ``
 
 ![](tutorial_files/figure-html/unnamed-chunk-30-1.png)
 
@@ -655,8 +652,7 @@ very small. Unstable estimates are attempted to be removed automatically
 from the heterogeneity analysis
 
 \
-`x``$``plot_pleiotropy_heterogeneity``(``pthresh``=``0.05``)`\
-`` #> `height` was translated to `width`. ``
+`x``$``plot_pleiotropy_heterogeneity``(``pthresh``=``0.05``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-31-1.png)
 
@@ -664,8 +660,7 @@ No SNPs are showing substantial differences in pleiotropy deviation
 across populations. Plot everything by relaxing the threshold
 
 \
-`x``$``plot_pleiotropy_heterogeneity``(``pthresh``=``1``)`\
-`` #> `height` was translated to `width`. ``
+`x``$``plot_pleiotropy_heterogeneity``(``pthresh``=``1``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-32-1.png)
 
@@ -759,8 +754,7 @@ This is the distribution of the estimate of the pleiotropic effect of
 each SNP that showed heterogeneity
 
 \
-`x``$``mrgxe_plot``(``)`\
-`` #> `height` was translated to `width`. ``
+`x``$``mrgxe_plot``(``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-35-1.png)
 
@@ -787,8 +781,7 @@ the intercept reflecting the pleiotropic association.
 
 \
 `x``$``mrgxe_plot_variant``(``)`\
-`` #> `geom_smooth()` using formula = 'y ~ x' ``\
-`` #> `height` was translated to `width`. ``
+`` #> `geom_smooth()` using formula = 'y ~ x' ``
 
 ![](tutorial_files/figure-html/unnamed-chunk-37-1.png)
 
