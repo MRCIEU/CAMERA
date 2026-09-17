@@ -42,7 +42,7 @@ CAMERA$set("public", "make_outcome_data", function(exp = self$instrument_raw, p_
 #' @param exp Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_fema, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
 #' @param p_exp Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.
 #' @return Data frame in x$instrument_outcome
-CAMERA$set("public", "make_outcome_local", function(exp = self$instrument_raw, out = self$instrument_outcome_regions, p_exp = 0.05 / nreow(exp)) {
+CAMERA$set("public", "make_outcome_local", function(exp = self$instrument_raw, out = self$instrument_outcome_regions, p_exp = 0.05 / nrow(exp)) {
   out <- lapply(out, \(x) {
     lapply(x, \(y) {
       subset(y, rsid %in% exp$rsid)
