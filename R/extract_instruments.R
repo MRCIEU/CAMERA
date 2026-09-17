@@ -14,6 +14,7 @@ generate_vid <- function(d, ea = "ea", nea = "nea", eaf = "eaf", beta = "beta", 
 #' @description
 #'  This function searches for GWAS significant SNPs (P < 5E-8) for a specified set of the exposures. This method is equivalant to the instrumnet extraction method for Multivariable MR. Reference here: https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.html.
 #' @param exposure_ids ID for the exposure. Default is x$exposure_ids.
+#' @param ... Further arguments passed to `TwoSampleMR::mv_extract_exposures()`
 #' @return Data frame in x$instrument_raw
 CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposure_ids, ...) {
   suppressMessages(instrument_raw <- TwoSampleMR::mv_extract_exposures(exposure_ids, ...))
@@ -225,9 +226,8 @@ CAMERA$set("public", "plot_regional_instruments_maxz", function(instrument_regio
   p
 })
 
-#' Generate LD matrices for instrument regions
-#'
 #' @description
+#' Generate LD matrices for instrument regions.
 #' If we want to do fine mapping we need to get an LD matrix for the whole region (for each population)
 #' We then need to harmonise the LD matrix to the summary data, and the summary datasets to each other
 #' The function obtains an LD matrix for the selected genomic regions.

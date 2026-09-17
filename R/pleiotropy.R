@@ -1,5 +1,5 @@
-#' Estimate similarity of horizontal pleiotropy across ancestries
-#'
+#' @description
+#' Estimate similarity of horizontal pleiotropy across ancestries.
 #' For each ancestry, identify outliers in the MR analysis based on per-variatn Q statistics. Then estimate the deviation from the main estimates for all outliers across all ancestries. Finally, determine if the pleiotropy deviation is consistent across all ancestries
 #'
 #' @param harmonised_dat Outcome from `harmonise` function
@@ -82,6 +82,7 @@ CAMERA$set("public", "pleiotropy", function(harmonised_dat = self$harmonised_dat
 
 })
 
+#' @description
 #' Plot pleiotropy results
 #'
 #' @param dat Output from `pleiotropy` - `pleiotropy_outliers`
@@ -108,6 +109,7 @@ CAMERA$set("public", "plot_pleiotropy", function(dat = self$pleiotropy_outliers)
   #   })
 })
 
+#' @description
 #' Plot pleiotropy results per variant
 #'
 #' @param dat Output from `pleiotropy` - `pleiotropy_Q_outliers`

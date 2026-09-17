@@ -43,6 +43,7 @@ prop_overlap <- function(b_disc, b_rep, se_disc, se_rep, alpha) {
 #' @param instrument Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_maxz, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
 #' @param alpha Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.
 #' @param method IVW or Simple MODE
+#' @param outlier_removal Remove outliers identified by radial IVW MR before estimating heterogeneity. Default is `FALSE`.
 #' @return Table of the result
 CAMERA$set("public", "instrument_heterogeneity", function(instrument = self$instrument_raw, alpha = "bonferroni", method = "ivw", outlier_removal = FALSE) {
   if (alpha == "bonferroni") {

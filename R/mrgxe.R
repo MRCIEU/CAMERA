@@ -2,16 +2,14 @@
 # Select SNPs that show heterogeneity across groups
 # Perform mrgxe_1 for each SNP
 
-#' Test for heterogeneity of effect estimates between populations
-#'
-#' @description For each SNP this function will provide a Cochran's Q test statistic - a measure of heterogeneity of effect sizes between populations. A low p-value means high heterogeneity.
+#' @description
+#' Test for heterogeneity of effect estimates between populations.
+#' For each SNP this function will provide a Cochran's Q test statistic - a measure of heterogeneity of effect sizes between populations. A low p-value means high heterogeneity.
 #' In addition, for every SNP it gives a per population p-value - this can be interpreted as asking for each SNP is a particular giving an outlier estimate.
 #'
-#' @param sslist Named list of data frames, one for each population, with at least beta, se and snp columns
+#' @param dat Harmonised data. Default is `x$harmonised_dat`.
 #'
-#' @return List
-#' - Q = vector of p-values for Cochrane's Q statistic for each SNP
-#' - Qj = Data frame of per-population outlier q values for each SNP
+#' @return Data frame of the Q statistic, its p-value and FDR adjusted p-value for each SNP, also stored in `x$instrument_heterogeneity_per_variant`
 CAMERA$set("public", "estimate_instrument_heterogeneity_per_variant", function(dat = self$harmonised_dat) {
     self$instrument_heterogeneity_per_variant <- dat %>%
         dplyr::group_by(SNP) %>%
@@ -87,6 +85,12 @@ egger_bootstrap <- function(b_gx, se_gx, b_gy, se_gy, nboot=1000) {
 }
 
 
+#' @description
+#' Estimate the pleiotropic effect of each variant using MR GxE across populations, see `egger_bootstrap()`
+#' @param dat Harmonised data. Default is `x$harmonised_dat`.
+#' @param variant_list SNPs to analyse. Default is the SNPs with FDR < 0.05 in `x$instrument_heterogeneity_per_variant`.
+#' @param nboot Number of bootstraps. Default is 100.
+#' @return Data frame of the MR GxE results, also stored in `x$mrgxe_res`
 CAMERA$set("public", "mrgxe", function(dat = self$harmonised_dat, variant_list = subset(self$instrument_heterogeneity_per_variant, Qfdr < 0.05)$SNP, nboot = 100) {
     self$mrgxe_res <- dat %>%
         dplyr::filter(SNP %in% variant_list) %>%
@@ -99,6 +103,10 @@ CAMERA$set("public", "mrgxe", function(dat = self$harmonised_dat, variant_list =
 })
 
 
+#' @description
+#' Plot the MR GxE pleiotropy estimates for each variant
+#' @param mrgxe_res Results from `mrgxe()`. Default is `x$mrgxe_res`.
+#' @return Plot
 CAMERA$set("public", "mrgxe_plot", function(mrgxe_res = self$mrgxe_res) {
     mrgxe_res %>%
         dplyr::arrange(a) %>%
@@ -110,6 +118,11 @@ CAMERA$set("public", "mrgxe_plot", function(mrgxe_res = self$mrgxe_res) {
 })
 
 
+#' @description
+#' Plot the instrument-exposure against instrument-outcome associations across populations for selected variants
+#' @param variant SNPs to plot. Default is the SNPs with FDR < 0.05 for the pleiotropy estimate in `x$mrgxe_res`.
+#' @param dat Harmonised data. Default is `x$harmonised_dat`.
+#' @return Plot
 CAMERA$set("public", "mrgxe_plot_variant", function(variant = self$mrgxe_res %>% dplyr::filter(p.adjust(a_pval, "fdr") < 0.05) %>% {.$SNP}, dat = self$harmonised_dat) {
     dat <- subset(dat, SNP %in% variant)
     ind <- dat$beta.x < 0

@@ -36,9 +36,10 @@ CAMERA$set("public", "cross_estimate", function(dat=self$harmonised_dat) {
 #' @description
 #' Plot the results from `cross_estimate`
 #'
-#' @param dat A data frame containing the harmonised data. It should have the columns `beta.y`, `beta.x`, `se.y`, and `pops`. If not provided, the method uses the `harmonised_dat` attribute of the `CAMERA` object.
+#' @param est Results from `cross_estimate()`. Default is `x$mrres`.
+#' @param qj_alpha Significance threshold for highlighting heterogeneous estimates. Default is 0.05.
 #'
-#' @return A list containing the results of the analysis. The list includes the coefficients of the fitted models, and the results of the heterogeneity analysis.
+#' @return Plot
 CAMERA$set("public", "plot_cross_estimate", function(est=self$mrres, qj_alpha=0.05) {
   est$what <- "Pops"
   est$what[est$pops=="All"] <- "All"

@@ -50,6 +50,12 @@ CAMERA$set("public", "perform_basic_sem", function(harmonised_dat = self$harmoni
 })
 
 
+#' @description
+#' Fit an SEM model using lavaan
+#' @param model lavaan model syntax
+#' @param data Data frame of the data for the model
+#' @param modname Name of the model used to label the results
+#' @return Data frame of the SEM estimates for each population
 CAMERA$set("public", "runsem", function(model, data, modname) {
   mod <- lavaan::sem(model, data = data)
   invisible(capture.output(mod <- lavaan::summary(mod, fit.measures = TRUE)))

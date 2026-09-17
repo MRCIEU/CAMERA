@@ -38,13 +38,15 @@ z_meta_analysis <- function(beta_mat, se_mat, n, eaf_mat) {
   return(dplyr::tibble(nstudy, p, z=abs(zw)))
 }
 
-#' Identify best variant for each region
+#' @description
+#' Identify the best variant for each region by meta-analysing the associations across the populations
 #'
-#' Use the
+#' @param method Meta-analysis method, either `"fema"` (fixed effects meta-analysis) or `"zma"` (Z score meta-analysis). Default is `"fema"`.
+#' @param instrument_regions Genomic regions identified by using `x$extract_instrument_regions()`
+#' @param instrument_raw Instruments for the exposures obtained from `x$extract_instruments()`
+#' @param n Sample sizes for each exposure, required for `method = "zma"`. Default is the sample sizes from `x$exposure_metadata`.
 #'
-#' @param dat Output from `pleiotropy` - `pleiotropy_outliers`
-#'
-#' @return plot
+#' @return Data frame of the selected instruments, also stored in `x$instrument_fema`
 CAMERA$set("public", "fema_regional_instruments", function(method = "fema", instrument_regions = self$instrument_regions, instrument_raw = self$instrument_raw, n=self$exposure_metadata$sample_size) {
 
   stopifnot(method %in% c("fema", "zma"))
@@ -119,6 +121,12 @@ CAMERA$set("public", "fema_regional_instruments", function(method = "fema", inst
 })
 
 
+#' @description
+#' Plot the associations in a region for each population and for the meta-analysis
+#' @param region Name of the region to plot, i.e. one of `names(x$instrument_regions)`
+#' @param instrument_regions Genomic regions identified by using `x$extract_instrument_regions()`
+#' @param meta_analysis_regions Meta-analysis results for each region obtained from `x$fema_regional_instruments()`
+#' @return Plot
 CAMERA$set("public", "plot_regional_instruments", function(region, instrument_regions=self$instrument_regions, meta_analysis_regions=self$instrument_fema_regions) {
   r <- instrument_regions[[region]]
   d <- meta_analysis_regions[[region]]
