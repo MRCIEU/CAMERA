@@ -19,7 +19,11 @@ CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposur
   suppressMessages(instrument_raw <- TwoSampleMR::mv_extract_exposures(exposure_ids, ...))
   # Add chromosome and position
   suppressMessages(instrument_raw <- TwoSampleMR::add_metadata(instrument_raw, cols = c("sample_size", "ncase", "ncontrol", "unit", "sd")))
-  suppressMessages(instrument_raw <- ieugwasr::variants_rsid(unique(instrument_raw$SNP)) %>%
+  variants <- suppressMessages(ieugwasr::variants_rsid(unique(instrument_raw$SNP)))
+  if (!is.data.frame(variants) || !all(c("query", "chr", "pos") %in% names(variants))) {
+    stop("Could not retrieve chromosome and position for the instruments from the OpenGWAS API using ieugwasr::variants_rsid(). The API may be temporarily unavailable or you may have used up your allowance, please try again later. See https://api.opengwas.io/api/#allowance")
+  }
+  suppressMessages(instrument_raw <- variants %>%
     dplyr::select(SNP = query, chr, position = pos) %>%
     dplyr::inner_join(., instrument_raw, by = "SNP") %>%
     dplyr::arrange(id.exposure, chr, position))
@@ -39,7 +43,7 @@ CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposur
   id <- list()
   id <- t$id[t$`sum(p < 5e-08)` < 1]
   if (length(id) > 0) {
-    message(paste0("Caution: No SNPs reached genome-wide significance threshold for the trait in ", id))
+    message(paste0("Caution: No SNPs reached genome-wide significance threshold for the trait in ", paste(id, collapse = ", ")))
   }
   self$instrument_raw <- generate_vid(instrument_raw)
   invisible(self)
