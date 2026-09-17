@@ -377,7 +377,7 @@ than any of the others because it is combining similar estimates.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_cross_estimate</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="perform-regional-scan-to-obtain-ld-agnostic-instruments">Perform regional scan to obtain LD agnostic instruments<a class="anchor" aria-label="anchor" href="#perform-regional-scan-to-obtain-ld-agnostic-instruments"></a>
@@ -434,7 +434,7 @@ studies:</p>
 <p>Example</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_regional_instruments</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">instrument_regions</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="672"></p>
 <p>Here, the European top hit is in LD with many other variants in the
 European ancestry, but meta-analysing with the other ancestries
 identified a similarly strongly associated variant in Europeans that is
@@ -505,7 +505,7 @@ improved instrument selection.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_cross_estimate</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" alt="" width="672"></p>
 <p>Evaluate instrument specificity. First using heterogeneity</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">instrument_heterogeneity</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">instrument_fema</span><span class="op">)</span></span>
@@ -670,7 +670,7 @@ populations</p>
 <span><span class="co">#&gt; Joining with `by = join_by(pop2, SNP)`</span></span>
 <span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
 <span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-30-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-30-1.png" class="r-plt" alt="" width="672"></p>
 <p>Identify any variants that showed substantial differences in
 pleiotropy deviations across populations. Note that sometimes the
 pleiotropy deviation estimate is unstable due to the SNP-exposure
@@ -679,13 +679,13 @@ removed automatically from the heterogeneity analysis</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_pleiotropy_heterogeneity</span><span class="op">(</span>pthresh<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-31-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-31-1.png" class="r-plt" alt="" width="672"></p>
 <p>No SNPs are showing substantial differences in pleiotropy deviation
 across populations. Plot everything by relaxing the threshold</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">plot_pleiotropy_heterogeneity</span><span class="op">(</span>pthresh<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-32-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-32-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="mr-gxe">MR GxE<a class="anchor" aria-label="anchor" href="#mr-gxe"></a>
@@ -774,7 +774,7 @@ each SNP that showed heterogeneity</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">mrgxe_plot</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="" width="672"></p>
 <p>Any evidence of SNPs with substantial heterogeneity?</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="va">mrgxe_res</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust</a></span><span class="op">(</span><span class="va">a_pval</span>, <span class="st">"fdr"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">)</span></span>
@@ -797,7 +797,7 @@ the intercept reflecting the pleiotropic association.</p>
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="fu">mrgxe_plot_variant</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span>
 <span><span class="co">#&gt; `height` was translated to `width`.</span></span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-37-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-37-1.png" class="r-plt" alt="" width="672"></p>
 <p>In this case the associations are very noisy, and it would be
 difficult to justify that they show convincing evidence of the
 pleiotropy estimate.</p>
