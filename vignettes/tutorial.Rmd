@@ -13,7 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>", 
   cache=TRUE,
   eval=TRUE,
-  warning=FALSE
+  warning=FALSE,
+  fig.width=7,
+  fig.height=5
 )
 ```
 
@@ -192,7 +194,7 @@ x$fema_regional_instruments(method="zma") %>% str()
 
 Example
 
-```{r}
+```{r, fig.height=8}
 x$plot_regional_instruments(names(x$instrument_regions)[3])
 ```
 
@@ -323,7 +325,7 @@ x$mrgxe_res
 
 This is the distribution of the estimate of the pleiotropic effect of each SNP that showed heterogeneity
 
-```{r}
+```{r, fig.height=12}
 x$mrgxe_plot()
 ```
 
