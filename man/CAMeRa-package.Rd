@@ -28,4 +28,9 @@ Authors:
   \item Tom Palmer \email{tom.palmer@bristol.ac.uk} (\href{https://orcid.org/0000-0003-4655-4511}{ORCID})
 }
 
+Other contributors:
+\itemize{
+  \item Amy Mason \email{am2609@medschl.cam.ac.uk} (\href{https://orcid.org/0000-0002-8019-0777}{ORCID}) [contributor]
+}
+
 }

@@ -66,6 +66,14 @@ Once you obtain the study IDs for the exposure and the outcome, open R6 class en
 
 Plink (version 1.90) and LD reference data are required to identify instruments that can be used for both populations. LD reference data can be accessed from: http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz.
 
+The example below uses the [genetics.binaRies](https://github.com/MRCIEU/genetics.binaRies) package to locate a plink executable. It is not installed with CAMeRa, so either install it with
+
+```{r, eval=FALSE}
+install.packages("genetics.binaRies", repos = c("https://mrcieu.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+or set `plink` to the path of your own plink executable.
+
 
 ```{r, eval=FALSE}
 bfile_dir <- "/path/to/ld_files"
@@ -91,11 +99,13 @@ x <- CAMERA$new(
 x
 ```
 
-```{r, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
-x1 <- readRDS(system.file(package="CAMeRa", "extdata/example-CAMERA.rds"))
+In this vignette the code chunks that query OpenGWAS or need plink are shown but not run. Instead, we load the results of running them from an example object that ships with the package. This object was created in September 2026. The data in OpenGWAS can change over time, so if you run the analysis yourself your results may differ from those shown here.
+
+```{r, message=FALSE, warning=FALSE}
+x_example <- readRDS(system.file(package="CAMeRa", "extdata/example-CAMERA.rds"))
 x <- CAMERA$new()
-x$import(x1)
-rm(x1)
+x$import(x_example)
+rm(x_example)
 ```
 
 ## Check phenotype scales across ancestries
@@ -118,7 +128,7 @@ We can now perform the analysis, which will do the following:
 5. Harmonise the exposure data and the outcome data
 6. Perform MR
 
-Note see the `?CAMERA` for options on the parameters for this analysis. 
+See `?CAMERA`, or the [CAMERA reference page](https://mrcieu.github.io/CAMERA/reference/CAMERA.html), for details of the options and outputs of each method. A summary of the methods used in this vignette is given in the [Overview of methods](#overview-of-methods) section at the end.
 
 The following function identifies SNPs that have strong associations with the exposure in each population. This is the same method as instrument extraction for multivariable MR. 
 
@@ -164,7 +174,7 @@ We will perform an inverse variance weighted fixed effects MR method within popu
 x$cross_estimate()
 ```
 
-Here we see a very consistent association across all ancestries. Note that the `All` estimate is slightly more precisely estimated than any of the others because it is combining similar estimates.
+In this example the estimates are broadly consistent across ancestries, although the EAS estimate is somewhat larger than the others (see the `Qjpval` column). Note that the `All` estimate is slightly more precisely estimated than any of the others because it is combining similar estimates.
 
 We can visualise the estimates:
 
@@ -180,13 +190,13 @@ We can re-select the instruments scanning across the region. The intention here 
 x$extract_instrument_regions()
 ```
 
-This has extracted regions around all the pooled instruments from each exposure dataset. Now we can use either fixed effects meta analysis within each region to choose the best SNP across all ancestries. For the cases where the most strongly associated SNPs are not available at exactly the same position, the function searches alternative SNPs that are located near the original SNP and show the largest effect size magnitude.
+This has extracted regions around all the pooled instruments from each exposure dataset. Now we can choose the best SNP in each region across all ancestries using a fixed effects meta analysis. For the cases where the most strongly associated SNPs are not available at exactly the same position, the function searches alternative SNPs that are located near the original SNP and show the largest effect size magnitude.
 
 ```{r}
 x$fema_regional_instruments() %>% str()
 ```
 
-or use a Z-score based meta analysis if you are unsure about whether the effect size scales are sufficiently consistent across the studies:
+Alternatively, use a Z-score based meta analysis if you are unsure about whether the effect size scales are sufficiently consistent across the studies:
 
 ```{r}
 x$fema_regional_instruments(method="zma") %>% str()
@@ -202,19 +212,13 @@ Here, the European top hit is in LD with many other variants in the European anc
 
 ## Re-perform analysis using regional instruments
 
-Note that we're now making a copy of `x` to change the `x$outcome_outcome` and `x$harmonised_dat` objects to reflect the regional instrument selection. But because `x` is an R6 class object, we need to explicitly use the `x$clone()` function to create a new copy.
-
-```{r}
-x1 <- x$clone()
-```
-
-Now override the harmonised data using the regional instrument selection
+We now repeat the analysis using the regional instruments in `x$instrument_fema`. First, extract outcome data for the regional instruments. Outcome data are only extracted for SNPs which are not already in `x$instrument_outcome`, and are appended to it, so the existing outcome data are kept.
 
 ```{r, eval=FALSE}
 x$make_outcome_data(exp=x$instrument_fema)
 ```
 
-Re-harmonise with the newly extracted data
+Re-harmonise using the regional instruments. This replaces `x$harmonised_dat`, so the analyses below use the regional instruments.
 
 ```{r}
 x$harmonise(exp=x$instrument_fema)
@@ -226,7 +230,7 @@ Re-estimate the MR associations using the newly derived regional instruments
 x$cross_estimate()
 ```
 
-The precision of the associations are improved because of the improved instrument selection.
+In this example the estimates are more consistent across ancestries than with the raw instruments (compare the `Qjpval` values), although they are slightly less precise.
 
 ```{r}
 x$plot_cross_estimate()
@@ -238,14 +242,14 @@ Evaluate instrument specificity. First using heterogeneity
 x$instrument_heterogeneity(x$instrument_fema)
 ```
 
-Compared to above the `agreement` regression slopes are much closer to 1 for all ancestries.
+In this example, compared to above, the `agreement` regression slopes are closer to 1 for most pairs of ancestries.
 
 ```{r}
 x$estimate_instrument_specificity(x$instrument_fema, alpha = "bonferroni")
 x$instrument_specificity$distinct %>% table
 ```
 
-The number of apparently distinct instruments is reduced also.
+Instruments with `distinct` equal to `TRUE` were expected to replicate, or to have the same sign, in another population but did not.
 
 <!-- ## Attempt to re-scale instrument-exposure associations -->
 
@@ -298,7 +302,7 @@ Identify any variants that showed substantial differences in pleiotropy deviatio
 x$plot_pleiotropy_heterogeneity(pthresh=0.05)
 ```
 
-No SNPs are showing substantial differences in pleiotropy deviation across populations. Plot everything by relaxing the threshold
+In this example one SNP shows evidence of differences in pleiotropy deviation across populations, driven by the very imprecise estimate in AFR. Plot everything by relaxing the threshold
 
 ```{r}
 x$plot_pleiotropy_heterogeneity(pthresh=1)
@@ -362,6 +366,11 @@ x <- readRDS(file="example-CAMERA.rds")
 
 You can import data from one CAMERA object to another like this:
 
+```{r, eval=FALSE}
+x_new <- CAMERA$new()
+x_new$import(x)
+```
+
 ```{r, eval=FALSE, echo=FALSE}
 load_all()
 x1 <- readRDS(file="inst/extdata/example-CAMERA.rds")
@@ -373,3 +382,25 @@ x$plot_pleiotropy()
 x$plot_pleiotropy_heterogeneity(pthresh=0.05)
 ```
 
+## Overview of methods
+
+The analysis functions in CAMeRa are methods of the `CAMERA` class, so they are called as `x$method()` and are documented together on the [CAMERA reference page](https://mrcieu.github.io/CAMERA/reference/CAMERA.html) (or `?CAMERA`). The methods used in this vignette, in the order they are used, are:
+
+| Step | Method | Results |
+|---|---|---|
+| Check phenotype scales across ancestries | [`check_phenotypes()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-check_phenotypes) | Printed table |
+| Extract instruments | [`extract_instruments()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-extract_instruments) | `x$instrument_raw` |
+| Instrument heterogeneity across populations | [`instrument_heterogeneity()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-instrument_heterogeneity) | Returned table |
+| Instrument specificity across populations | [`estimate_instrument_specificity()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-estimate_instrument_specificity) | `x$instrument_specificity_summary`, `x$instrument_specificity` |
+| Extract outcome data | [`make_outcome_data()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-make_outcome_data) | `x$instrument_outcome` |
+| Harmonise exposure and outcome data | [`harmonise()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-harmonise) | `x$harmonised_dat` |
+| MR within and across populations | [`cross_estimate()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-cross_estimate) | `x$mrres` |
+| Plot MR estimates | [`plot_cross_estimate()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-plot_cross_estimate) | Plot |
+| Extract regions around instruments | [`extract_instrument_regions()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-extract_instrument_regions) | `x$instrument_regions` |
+| Select regional instruments by meta analysis | [`fema_regional_instruments()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-fema_regional_instruments) | `x$instrument_fema`, `x$instrument_fema_regions` |
+| Plot a region | [`plot_regional_instruments()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-plot_regional_instruments) | Plot |
+| Pleiotropy across ancestries | [`pleiotropy()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-pleiotropy) | `x$pleiotropy_outliers`, `x$pleiotropy_Q_outliers`, `x$pleiotropy_agreement` |
+| Plot pleiotropy | [`plot_pleiotropy()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-plot_pleiotropy), [`plot_pleiotropy_heterogeneity()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-plot_pleiotropy_heterogeneity) | Plots |
+| Per variant instrument-exposure heterogeneity | [`estimate_instrument_heterogeneity_per_variant()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-estimate_instrument_heterogeneity_per_variant) | `x$instrument_heterogeneity_per_variant` |
+| MR GxE | [`mrgxe()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-mrgxe) | `x$mrgxe_res` |
+| Plot MR GxE results | [`mrgxe_plot()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-mrgxe_plot), [`mrgxe_plot_variant()`](https://mrcieu.github.io/CAMERA/reference/CAMERA.html#method-CAMERA-mrgxe_plot_variant) | Plots |

@@ -42,9 +42,16 @@ prop_overlap <- function(b_disc, b_rep, se_disc, se_rep, alpha) {
 #' The function evaluates heterogeneity in the association of selected instruments and the exposure/outcome between the populations. Heterogeneity (Q statistics) is calcuated based on an IVW or simple MODE MR estimator. The instruments can be identified using "Raw", "MaxZ", or fine-mapping (Susie, PAINTOR) methods.
 #' @param instrument Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_maxz, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
 #' @param alpha Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.
-#' @param method IVW or Simple MODE
-#' @param outlier_removal Remove outliers identified by radial IVW MR before estimating heterogeneity. Default is `FALSE`.
-#' @return Table of the result
+#' For each pair of populations, the instruments that are significant (`p < alpha`) in the reference population are taken and their associations in the replication population are regressed on their associations in the reference population. If the instruments have the same effects in both populations the slope (`agreement`) is expected to be close to 1.
+#' @param method Method used to estimate the agreement slope, either `"ivw"` (inverse variance weighted, using [TwoSampleMR::mr_ivw()]) or `"simple_mode"` (using [TwoSampleMR::mr_simple_mode()]). Default is `"ivw"`.
+#' @param outlier_removal Remove outliers identified by radial IVW MR before estimating heterogeneity. Only the first two exposures are used to identify outliers. Default is `FALSE`.
+#' @return Data frame with one row for each ordered pair of populations, with columns:
+#' - `Reference`, `Replication`: IDs of the reference and replication datasets
+#' - `nsnp`: number of instruments significant in the reference dataset that are also present in the replication dataset
+#' - `agreement`: slope of the regression of the replication associations on the reference associations
+#' - `se`, `pval`: standard error of `agreement` and p-value for the test of the null hypothesis that the slope is 0 (i.e. no association between the instrument associations in the two populations)
+#' - `Q`, `Q_pval` (`"ivw"` only): Cochran's Q statistic and its p-value for the null hypothesis that all instruments share the same slope, i.e. no heterogeneity in the agreement between populations
+#' - `I2` (`"ivw"` only): the proportion of the variation in the ratio of the associations that is due to heterogeneity rather than chance, calculated as `(Q - nsnp) / Q`
 CAMERA$set("public", "instrument_heterogeneity", function(instrument = self$instrument_raw, alpha = "bonferroni", method = "ivw", outlier_removal = FALSE) {
   if (alpha == "bonferroni") {
     alpha <- 0.05 / (nrow(instrument))
@@ -158,7 +165,16 @@ CAMERA$set("public", "instrument_heterogeneity", function(instrument = self$inst
 #' @param instrument Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_maxz, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.
 #' @param alpha Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.
 #' @param winnerscurse Use this option to correct winners' curse bias.
-#' @return Table of the results. Summary of the results available in x$instrument_specificity_summary.
+#' @details
+#' For each pair of populations, the instruments that are significant (`p < alpha`) in the discovery population are compared with their associations in the replication population. Following Okbay et al. (2016), under the hypothesis that the instruments have the same effects in both populations, the expected number of instruments with the same sign, and the expected number with `p < alpha`, in the replication population are calculated taking account of the precision of the replication associations. These are compared with the observed numbers.
+#' @return Data frame, also stored in `x$instrument_specificity_summary`, with columns:
+#' - `discovery`, `replication`: IDs of the discovery and replication datasets
+#' - `metric`: `"Sign"` (the instrument has the same sign in both populations) or `"P-value"` (the instrument has `p < alpha` in the replication population)
+#' - `nsnp`: number of instruments compared
+#' - `datum`, `value`: the `"Expected"` and `"Observed"` number of instruments meeting `metric`
+#' - `pdiff`: p-value from a binomial test of the null hypothesis that the observed number equals the expected number. A small p-value suggests the instruments replicate less (or more) than expected if their effects were the same in both populations.
+#'
+#' Per variant results are stored in `x$instrument_specificity`, including the expected probabilities of sign agreement (`sign`) and replication (`sig`), and `distinct`, which flags instruments that were expected to replicate but did not (`sig > 0.8` and replication `p > 0.1`), or were expected to have the same sign but did not (`sign > 0.8`).
 CAMERA$set("public", "estimate_instrument_specificity", function(instrument, alpha = "bonferroni", winnerscurse = FALSE) {
   if (alpha == "bonferroni") {
     alpha <- 0.05 / nrow(instrument)

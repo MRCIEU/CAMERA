@@ -98,7 +98,7 @@ CAMERA$set("public", "extract_instrument_regions", function(radius = self$radius
             x$beta[index] <- x$beta[index] * -1
             nea <- x$nea[index]
             x$nea[index] <- x$ea[index]
-            x$ea[index] <- x$nea[index]
+            x$ea[index] <- nea
             x$eaf[index] <- 1 - x$eaf[index]
             x <- subset(x, nea == a[[1]]$nea)
           }

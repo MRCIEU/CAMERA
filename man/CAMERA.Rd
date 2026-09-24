@@ -279,14 +279,23 @@ Using a summary set, identify set of instruments for the traits, and perform SEM
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{instrument}}{Intsruments for the exposure that are selected by using the provided methods in CAMERA (x$instrument_raw, x$instrument_maxz, x$instrument_susie, x$instrument_paintor). Default is x$instrument_raw.}
-      \item{\code{alpha}}{Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.}
-      \item{\code{method}}{IVW or Simple MODE}
-      \item{\code{outlier_removal}}{Remove outliers identified by radial IVW MR before estimating heterogeneity. Default is \code{FALSE}.}
+      \item{\code{alpha}}{Statistical threshold to determine significance. Default is "bonferroni", which is eqaul to 0.05/number of the instruments.
+For each pair of populations, the instruments that are significant (\code{p < alpha}) in the reference population are taken and their associations in the replication population are regressed on their associations in the reference population. If the instruments have the same effects in both populations the slope (\code{agreement}) is expected to be close to 1.}
+      \item{\code{method}}{Method used to estimate the agreement slope, either \code{"ivw"} (inverse variance weighted, using \code{\link[TwoSampleMR:mr_ivw]{TwoSampleMR::mr_ivw()}}) or \code{"simple_mode"} (using \code{\link[TwoSampleMR:mr_simple_mode]{TwoSampleMR::mr_simple_mode()}}). Default is \code{"ivw"}.}
+      \item{\code{outlier_removal}}{Remove outliers identified by radial IVW MR before estimating heterogeneity. Only the first two exposures are used to identify outliers. Default is \code{FALSE}.}
     }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    Table of the result
+    Data frame with one row for each ordered pair of populations, with columns:
+\itemize{
+\item \code{Reference}, \code{Replication}: IDs of the reference and replication datasets
+\item \code{nsnp}: number of instruments significant in the reference dataset that are also present in the replication dataset
+\item \code{agreement}: slope of the regression of the replication associations on the reference associations
+\item \code{se}, \code{pval}: standard error of \code{agreement} and p-value for the test of the null hypothesis that the slope is 0 (i.e. no association between the instrument associations in the two populations)
+\item \code{Q}, \code{Q_pval} (\code{"ivw"} only): Cochran's Q statistic and its p-value for the null hypothesis that all instruments share the same slope, i.e. no heterogeneity in the agreement between populations
+\item \code{I2} (\code{"ivw"} only): the proportion of the variation in the ratio of the associations that is due to heterogeneity rather than chance, calculated as \code{(Q - nsnp) / Q}
+}
   }
 }
 
@@ -313,8 +322,20 @@ Using a summary set, identify set of instruments for the traits, and perform SEM
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Details}{
+    For each pair of populations, the instruments that are significant (\code{p < alpha}) in the discovery population are compared with their associations in the replication population. Following Okbay et al. (2016), under the hypothesis that the instruments have the same effects in both populations, the expected number of instruments with the same sign, and the expected number with \code{p < alpha}, in the replication population are calculated taking account of the precision of the replication associations. These are compared with the observed numbers.
+  }
   \subsection{Returns}{
-    Table of the results. Summary of the results available in x$instrument_specificity_summary.
+    Data frame, also stored in \code{x$instrument_specificity_summary}, with columns:
+\itemize{
+\item \code{discovery}, \code{replication}: IDs of the discovery and replication datasets
+\item \code{metric}: \code{"Sign"} (the instrument has the same sign in both populations) or \code{"P-value"} (the instrument has \code{p < alpha} in the replication population)
+\item \code{nsnp}: number of instruments compared
+\item \code{datum}, \code{value}: the \code{"Expected"} and \code{"Observed"} number of instruments meeting \code{metric}
+\item \code{pdiff}: p-value from a binomial test of the null hypothesis that the observed number equals the expected number. A small p-value suggests the instruments replicate less (or more) than expected if their effects were the same in both populations.
+}
+
+Per variant results are stored in \code{x$instrument_specificity}, including the expected probabilities of sign agreement (\code{sign}) and replication (\code{sig}), and \code{distinct}, which flags instruments that were expected to replicate but did not (\code{sig > 0.8} and replication \code{p > 0.1}), or were expected to have the same sign but did not (\code{sign > 0.8}).
   }
 }
 
@@ -384,7 +405,12 @@ Using a summary set, identify set of instruments for the traits, and perform SEM
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    A list containing the results of the analysis. The list includes the coefficients of the fitted models, and the results of the heterogeneity analysis.
+    Data frame, also stored in \code{x$mrres}, with one row for the estimate across all populations (\code{pops == "All"}) and one row for each population, with columns:
+\itemize{
+\item \code{pops}: population
+\item \code{Estimate}, \verb{Std. Error}, \verb{t value}, \verb{Pr(>|t|)}: the IVW MR estimate, i.e. the weighted regression of the SNP-outcome associations on the SNP-exposure associations through the origin with weights \code{1 / se.y^2}, its standard error, t statistic and p-value
+\item \code{Qj}, \code{Qjpval}, \code{Qdf}: for each population, the contribution of its estimate to the heterogeneity between populations and its p-value (1 degree of freedom), from a fixed effects meta analysis of the population estimates; a small p-value suggests the estimate in that population differs from the others. For the \code{"All"} row these are Cochran's Q statistic across all populations, its p-value (null hypothesis: the same causal effect in all populations) and its degrees of freedom.
+}
   }
 }
 
