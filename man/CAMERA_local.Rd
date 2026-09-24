@@ -6,11 +6,35 @@
 \title{CAMERA_local class}
 \description{
 A simple wrapper function for importing data from local files for use with the CAMERA class.
+
+Create the object with \code{CAMERA_local$new()} and then call its \code{organise()} method. This reads the summary statistics files listed in \code{metadata}, finds and clumps the top hits for each dataset, pools them across populations, and extracts the region around each instrument from every dataset. The results are stored in the \code{instrument_raw}, \code{instrument_outcome}, \code{instrument_regions} and \code{instrument_outcome_regions} fields, which can be passed to the \code{import_from_local()} method of a \link{CAMERA} object.
+
+See \code{vignette("import-local", package = "CAMeRa")} for a worked example.
+}
+\details{
+\code{metadata} must be a data frame with one row per summary statistics file (i.e. per trait and population) and the following columns:
+\itemize{
+\item \code{what}: either \code{"exposure"} or \code{"outcome"}
+\item \code{trait}: name of the trait, the same for all populations of a trait
+\item \code{pop}: population, e.g. \code{"EUR"}; must match the \code{pop} column of \code{ld_ref}
+\item \code{id}: a unique identifier for the dataset
+\item \code{fn}: path to the summary statistics file, which is read with \code{\link[data.table:fread]{data.table::fread()}}
+\item \code{chr_col}, \code{pos_col}, \code{ea_col}, \code{oa_col}, \code{eaf_col}, \code{beta_col}, \code{se_col}, \code{pval_col}: the name or number of the column in the file containing the chromosome, base pair position, effect allele, other allele, effect allele frequency, effect estimate, standard error, and p-value respectively
+}
+
+Other columns are ignored. Variants are identified by chromosome, position and alleles (as \code{chr:pos_a1_a2}, with the alleles in alphabetical order), so all files must use the same genome build.
+
+\code{ld_ref} must be a data frame with columns \code{pop} and \code{bfile}, giving for each population the path to a PLINK binary fileset (without the \code{.bed}/\code{.bim}/\code{.fam} extension) used as the LD reference for clumping.
+
+Top hits are only taken from datasets with at least two variants with p-value below \code{pthresh}. Currently \code{organise()} uses the first exposure trait and the first outcome trait in \code{metadata}.
+}
+\seealso{
+\link{CAMERA}, \code{vignette("import-local", package = "CAMeRa")}
 }
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
   \describe{
-    \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
+    \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See Details for the required columns}
 
     \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
 
@@ -51,7 +75,7 @@ A simple wrapper function for importing data from local files for use with the C
 \if{html}{\out{<a id="method-CAMERA_local-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-initialize}{}}}
 \subsection{\code{CAMERA_local$new()}}{
-  Create a new dataset and initialise an R interface
+  Create a new \code{CAMERA_local} object
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA_local$new(
@@ -68,8 +92,8 @@ A simple wrapper function for importing data from local files for use with the C
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
-      \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
+      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See Details for the required columns}
+      \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference. See Details}
       \item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
       \item{\code{mc.cores}}{Number of cores to use}
       \item{\code{radius}}{Genomic window size to extract SNPs}
@@ -85,7 +109,7 @@ A simple wrapper function for importing data from local files for use with the C
 \if{html}{\out{<a id="method-CAMERA_local-standardise"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-standardise}{}}}
 \subsection{\code{CAMERA_local$standardise()}}{
-  Standardise the allele coding
+  Standardise the allele coding so that the effect allele is the alphabetically first allele, flipping the effect estimate and allele frequency where needed, and create a variant ID of the form \code{chr:pos_ea_oa}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA_local$standardise(
@@ -114,13 +138,16 @@ A simple wrapper function for importing data from local files for use with the C
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    \code{d} with standardised alleles and a variant ID column
+  }
 }
 
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-read_file"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-read_file}{}}}
 \subsection{\code{CAMERA_local$read_file()}}{
-  Function to read in a file
+  Read in the summary statistics file for one dataset, drop variants with minor allele frequency below \code{minmaf}, and standardise the alleles
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA_local$read_file(m, minmaf = self$minmaf)}
@@ -134,13 +161,16 @@ A simple wrapper function for importing data from local files for use with the C
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    A tibble with columns \code{chr}, \code{pos}, \code{eaf}, \code{beta}, \code{se}, \code{pval}, \code{ea}, \code{oa} and \code{vid}
+  }
 }
 
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-pool_tophits"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-pool_tophits}{}}}
 \subsection{\code{CAMERA_local$pool_tophits()}}{
-  Pool the top hits
+  Pool the top hits across datasets. For each trait, the regions within \code{radius} of its top hits are merged, and the variants in each region are extracted from every dataset. Within each region the variant with the largest absolute z-score for the trait is selected, considering only variants present in a number of datasets for which at least one such variant has p-value below \code{pthresh}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA_local$pool_tophits(
@@ -158,7 +188,7 @@ A simple wrapper function for importing data from local files for use with the C
     \describe{
       \item{\code{rawdat}}{The raw data}
       \item{\code{tophits}}{The top hits}
-      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
+      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See Details for the required columns}
       \item{\code{radius}}{Genomic window size to extract SNPs}
       \item{\code{radius}}{Default 250000}
       \item{\code{pthresh}}{P-value threshold for instrument inclusion}
@@ -166,13 +196,16 @@ A simple wrapper function for importing data from local files for use with the C
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    A list with elements \code{region_list} (the merged regions for each trait), \code{region_extract} (the extracted variants in each region) and \code{tophit_pool} (the selected variant from each region in every dataset)
+  }
 }
 
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-organise_data"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-organise_data}{}}}
 \subsection{\code{CAMERA_local$organise_data()}}{
-  A function to organise the data
+  Read in the data (unless \code{rawdat} is supplied), find the top hits in each dataset by clumping the variants with p-value below \code{pthresh} using \code{\link[ieugwasr:ld_clump]{ieugwasr::ld_clump()}}, and pool them with \code{pool_tophits()}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA_local$organise_data(
@@ -190,9 +223,9 @@ A simple wrapper function for importing data from local files for use with the C
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See details for info on columns}
+      \item{\code{metadata}}{Data frame with information about the data. One row per dataset. See Details for the required columns}
       \item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
-      \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference}
+      \item{\code{ld_ref}}{Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference. See Details}
       \item{\code{pthresh}}{P-value threshold for instrument inclusion}
       \item{\code{minmaf}}{Minimum allele frequency per dataset}
       \item{\code{radius}}{Genomic window size to extract SNPs}
@@ -202,13 +235,16 @@ A simple wrapper function for importing data from local files for use with the C
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    As for \code{pool_tophits()}
+  }
 }
 
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-fixed_effects_meta_analysis_fast"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-fixed_effects_meta_analysis_fast}{}}}
 \subsection{\code{CAMERA_local$fixed_effects_meta_analysis_fast()}}{
-  A function to perform fixed effect meta-analysis
+  Fixed effect inverse variance weighted meta-analysis of each row of \code{beta_mat} and \code{se_mat}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA_local$fixed_effects_meta_analysis_fast(beta_mat, se_mat)}
@@ -222,13 +258,16 @@ A simple wrapper function for importing data from local files for use with the C
     }
     \if{html}{\out{</div>}}
   }
+  \subsection{Returns}{
+    A vector of p-values, one per row
+  }
 }
 
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CAMERA_local-organise"></a>}}
 \if{latex}{\out{\hypertarget{method-CAMERA_local-organise}{}}}
 \subsection{\code{CAMERA_local$organise()}}{
-  Organise the output
+  Organise the data for the exposure and outcome, populating the \code{instrument_raw}, \code{instrument_outcome}, \code{instrument_regions} and \code{instrument_outcome_regions} fields
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA_local$organise()}
