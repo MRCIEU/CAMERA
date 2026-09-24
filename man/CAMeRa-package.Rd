@@ -31,6 +31,7 @@ Authors:
 Other contributors:
 \itemize{
   \item Amy Mason \email{am2609@medschl.cam.ac.uk} (\href{https://orcid.org/0000-0002-8019-0777}{ORCID}) [contributor]
+  \item Mercy Kimani [contributor]
 }
 
 }
