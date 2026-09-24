@@ -1,5 +1,16 @@
 # Changelog
 
+## CAMeRa 0.1.3
+
+- Fix `CAMERA_local` so it can be initialised and run: add the missing
+  `radius` field, store `ld_ref`, call the class’s own methods, fix the
+  exposure/outcome subsetting, stop `mc.cores` being passed as
+  `pthresh`, use `mc.cores` (default 1, so it works on Windows) in all
+  parallel calls, use the `minmaf` setting when reading files, and
+  declare its dependencies (data.table, GenomicRanges, IRanges,
+  parallel) in Suggests (thanks
+  [@Mercy-Kimani](https://github.com/Mercy-Kimani))
+
 ## CAMeRa 0.1.2
 
 - Additional amends to the tutorial

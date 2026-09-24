@@ -2,8 +2,30 @@
 #' @docType class
 #' @description
 #' A simple wrapper function for importing data from local files for use with the CAMERA class.
-#' @param metadata Data frame with information about the data. One row per dataset. See details for info on columns
-#' @param ld_ref Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference
+#'
+#' Create the object with `CAMERA_local$new()` and then call its `organise()` method. This reads the summary statistics files listed in `metadata`, finds and clumps the top hits for each dataset, pools them across populations, and extracts the region around each instrument from every dataset. The results are stored in the `instrument_raw`, `instrument_outcome`, `instrument_regions` and `instrument_outcome_regions` fields, which can be passed to the `import_from_local()` method of a [CAMERA] object.
+#'
+#' See `vignette("import-local", package = "CAMeRa")` for a worked example.
+#'
+#' @details
+#' `metadata` must be a data frame with one row per summary statistics file (i.e. per trait and population) and the following columns:
+#'
+#' - `what`: either `"exposure"` or `"outcome"`
+#' - `trait`: name of the trait, the same for all populations of a trait
+#' - `pop`: population, e.g. `"EUR"`; must match the `pop` column of `ld_ref`
+#' - `id`: a unique identifier for the dataset
+#' - `fn`: path to the summary statistics file, which is read with [data.table::fread()]
+#' - `chr_col`, `pos_col`, `ea_col`, `oa_col`, `eaf_col`, `beta_col`, `se_col`, `pval_col`: the name or number of the column in the file containing the chromosome, base pair position, effect allele, other allele, effect allele frequency, effect estimate, standard error, and p-value respectively
+#'
+#' Other columns are ignored. Variants are identified by chromosome, position and alleles (as `chr:pos_a1_a2`, with the alleles in alphabetical order), so all files must use the same genome build.
+#'
+#' `ld_ref` must be a data frame with columns `pop` and `bfile`, giving for each population the path to a PLINK binary fileset (without the `.bed`/`.bim`/`.fam` extension) used as the LD reference for clumping.
+#'
+#' Top hits are only taken from datasets with at least two variants with p-value below `pthresh`. Currently `organise()` uses the first exposure trait and the first outcome trait in `metadata`.
+#'
+#' @seealso [CAMERA], `vignette("import-local", package = "CAMeRa")`
+#' @param metadata Data frame with information about the data. One row per dataset. See Details for the required columns
+#' @param ld_ref Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference. See Details
 #' @param plink_bin Location of executable plink (version 1.90 is recommended)
 #' @param radius Genomic window size to extract SNPs
 #' @param clump_pop Reference population for clumping
@@ -26,7 +48,7 @@
 #' @param se_mat Matrix of SEs
 #' @export
 CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
-    #' @field metadata Data frame with information about the data. One row per dataset. See details for info on columns
+    #' @field metadata Data frame with information about the data. One row per dataset. See Details for the required columns
     metadata = NULL,
     #' @field ld_ref Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference
     ld_ref = NULL,
@@ -34,6 +56,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     mc.cores = NULL,
     #' @field plink_bin Location of executable plink (version 1.90 is recommended)
     plink_bin = NULL,
+    #' @field radius Genomic window size to extract SNPs
+    radius = NULL,
     #' @field minmaf Minimum allele frequency per dataset
     minmaf = NULL,
     #' @field pthresh P-value threshold for instrument inclusion
@@ -49,9 +73,15 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
 
     # Methods
     #' @description
-    #' Create a new dataset and initialise an R interface
+    #' Create a new `CAMERA_local` object
     initialize = function(metadata, ld_ref, plink_bin, mc.cores=1, radius = 25000, pthresh = 5e-8, minmaf=0.01) {
+        for (pkg in c("data.table", "GenomicRanges", "IRanges")) {
+            if (!requireNamespace(pkg, quietly = TRUE)) {
+                stop("Package '", pkg, "' is required to use CAMERA_local. Please install it.")
+            }
+        }
         self$metadata <- metadata
+        self$ld_ref <- ld_ref
         self$plink_bin <- plink_bin
         self$radius <- radius
         self$mc.cores <- mc.cores
@@ -60,7 +90,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' Standardise the allele coding
+    #' Standardise the allele coding so that the effect allele is the alphabetically first allele, flipping the effect estimate and allele frequency where needed, and create a variant ID of the form `chr:pos_ea_oa`
+    #' @return `d` with standardised alleles and a variant ID column
     standardise = function(d, ea_col="ea", oa_col="oa", beta_col="beta", eaf_col="eaf", chr_col="chr", pos_col="pos", vid_col="vid") {
         toflip <- d[[ea_col]] > d[[oa_col]]
         d[[eaf_col]][toflip] <- 1 - d[[eaf_col]][toflip]
@@ -73,8 +104,9 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' Function to read in a file
-    read_file = function(m, minmaf=0.01) {
+    #' Read in the summary statistics file for one dataset, drop variants with minor allele frequency below `minmaf`, and standardise the alleles
+    #' @return A tibble with columns `chr`, `pos`, `eaf`, `beta`, `se`, `pval`, `ea`, `oa` and `vid`
+    read_file = function(m, minmaf=self$minmaf) {
         stopifnot(nrow(m) == 1)
         stopifnot(file.exists(m$fn))
         a <- data.table::fread(m$fn)
@@ -89,72 +121,74 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
             ea = a[[m$ea_col]],
             oa = a[[m$oa_col]]
         ) %>%
-        filter(eaf > minmaf & eaf < (1-minmaf)) %>%
-        standardise()
+        dplyr::filter(eaf > minmaf & eaf < (1-minmaf)) %>%
+        self$standardise()
         return(b)
     },
 
     #' @description
-    #' Pool the top hits
-    pool_tophits = function(rawdat, tophits, metadata, radius = 250000, pthresh = 5e-8, mc.cores = 10) {
-        regions <- GRanges(
+    #' Pool the top hits across datasets. For each trait, the regions within `radius` of its top hits are merged, and the variants in each region are extracted from every dataset. Within each region the variant with the largest absolute z-score for the trait is selected, considering only variants present in a number of datasets for which at least one such variant has p-value below `pthresh`
+    #' @return A list with elements `region_list` (the merged regions for each trait), `region_extract` (the extracted variants in each region) and `tophit_pool` (the selected variant from each region in every dataset)
+    pool_tophits = function(rawdat, tophits, metadata, radius = 250000, pthresh = 5e-8, mc.cores = 1) {
+        regions <- GenomicRanges::GRanges(
             seqnames = tophits$chr,
-            ranges = IRanges(start=tophits$pos-radius, end=tophits$pos+radius),
+            ranges = IRanges::IRanges(start=tophits$pos-radius, end=tophits$pos+radius),
             vid=tophits$vid,
             pop=tophits$pop,
             trait=tophits$trait
         )
         region_list <- lapply(unique(tophits$trait), \(tr) {
-            temp <- reduce(subset(regions, trait == tr))
+            temp <- GenomicRanges::reduce(subset(regions, trait == tr))
             temp$trait <- tr
             temp
         })
 
         region_extract <- lapply(1:length(region_list), \(tr) {
             region <- region_list[[tr]]
-            mclapply(1:length(region), \(i) {
+            parallel::mclapply(1:length(region), \(i) {
                 message(i, " of ", length(region))
                 a <- lapply(1:nrow(metadata), \(j) {
-                    subset(rawdat[[j]], chr == as.character(seqnames(region)[i]) & pos <= end(region)[i] & pos >= start(region)[i]) %>%
+                    subset(rawdat[[j]], chr == as.character(GenomicRanges::seqnames(region)[i]) & pos <= GenomicRanges::end(region)[i] & pos >= GenomicRanges::start(region)[i]) %>%
                         dplyr::mutate(trait = metadata$trait[j], pop = metadata$pop[j], id = metadata$id[j])
                 }) %>% dplyr::bind_rows()
-            })
+            }, mc.cores=mc.cores)
         })
 
         pool <- lapply(1:length(region_extract), \(tr) {
             region <- region_extract[[tr]]
-            mclapply(1:length(region), \(i) {
+            parallel::mclapply(1:length(region), \(i) {
                 target_trait <- region_list[[tr]]$trait[1]
                 a <- region[[i]]
-                k <- a %>% group_by(vid) %>% summarise(nstudies=n())
-                a <- left_join(a, k, by="vid")
-                k <- a %>% filter(trait == target_trait) %>%
-                    group_by(nstudies) %>%
-                    summarise(minp = min(pval)) %>%
-                    filter(minp < pthresh)
+                k <- a %>% dplyr::group_by(vid) %>% dplyr::summarise(nstudies=dplyr::n())
+                a <- dplyr::left_join(a, k, by="vid")
+                k <- a %>% dplyr::filter(trait == target_trait) %>%
+                    dplyr::group_by(nstudies) %>%
+                    dplyr::summarise(minp = min(pval)) %>%
+                    dplyr::filter(minp < pthresh)
                 a <- subset(a, nstudies %in% k$nstudies)
                 k <- subset(a, trait == target_trait) %>%
                     dplyr::mutate(z = abs(beta)/se) %>%
                     {subset(., z==max(z))$vid[1]}
                 a <- subset(a, vid == k) %>% dplyr::mutate(target_trait=target_trait)
                 return(a)
-            }, mc.cores=10) %>%
+            }, mc.cores=mc.cores) %>%
                 dplyr::bind_rows()
         }) %>% dplyr::bind_rows()
 
-        region_list <- lapply(region_list, as_tibble)
+        region_list <- lapply(region_list, dplyr::as_tibble)
 
         out <- list(region_list=region_list, region_extract=region_extract, tophit_pool=pool)
         return(out)
     },
 
     #' @description
-    #' A function to organise the data
-    organise_data = function(metadata=self$metadata, plink_bin=self$plink_bin, ld_ref=self$ld_ref, pthresh=self$pthresh, minmaf = self$minmaf, radius = self$radius, mc.cores = self$mc.cores) {
+    #' Read in the data (unless `rawdat` is supplied), find the top hits in each dataset by clumping the variants with p-value below `pthresh` using [ieugwasr::ld_clump()], and pool them with `pool_tophits()`
+    #' @return As for `pool_tophits()`
+    organise_data = function(metadata=self$metadata, plink_bin=self$plink_bin, ld_ref=self$ld_ref, pthresh=self$pthresh, minmaf = self$minmaf, radius = self$radius, mc.cores = self$mc.cores, rawdat = NULL) {
         # read in data
 
         if(is.null(rawdat)) {
-            rawdat <- mclapply(1:nrow(metadata), \(i) read_file(metadata[i,]))
+            rawdat <- parallel::mclapply(1:nrow(metadata), \(i) self$read_file(metadata[i,], minmaf=minmaf), mc.cores=mc.cores)
         }
 
         # get top hits for each
@@ -164,7 +198,7 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
                 dplyr::filter(pval < pthresh) %>%
                 dplyr::mutate(rsid = vid)
             if(nrow(x) > 1) {
-                ieugwasr::ld_clump(x, plink_bin=plink_bin, bfile=subset(ld_ref, pop == metadata$pop[i])$bfile) %>%
+                ieugwasr::ld_clump(x, plink_bin=plink_bin, bfile=subset(ld_ref, pop == metadata$pop[i])$bfile[1]) %>%
                     dplyr::select(-c(rsid)) %>%
                     dplyr::mutate(pop=metadata$pop[i], trait=metadata$trait[i])
             } else {
@@ -177,12 +211,13 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
         # Extract regions from each trait
         # Keep SNPs that have at least one GWAS sig and present in all
         # Clump to get tophits
-        out <- pool_tophits(rawdat, tophits, metadata, radius = radius, pthresh = pthresh, mc.cores = mc.cores)
+        out <- self$pool_tophits(rawdat, tophits, metadata, radius = radius, pthresh = pthresh, mc.cores = mc.cores)
         return(out)
     },
 
     #' @description
-    #' A function to perform fixed effect meta-analysis
+    #' Fixed effect inverse variance weighted meta-analysis of each row of `beta_mat` and `se_mat`
+    #' @return A vector of p-values, one per row
     fixed_effects_meta_analysis_fast = function(beta_mat, se_mat) {
         w <- 1 / se_mat^2
         beta <- rowSums(beta_mat * w, na.rm=TRUE) / rowSums(w, na.rm=TRUE)
@@ -192,16 +227,16 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' Organise the output
+    #' Organise the data for the exposure and outcome, populating the `instrument_raw`, `instrument_outcome`, `instrument_regions` and `instrument_outcome_regions` fields
     organise = function() {
         metadata <- self$metadata
         ld_ref <- self$ld_ref
-        exposure_trait <- subset(metadata, what = "exposure")$trait[1]
-        outcome_trait <- subset(metadata, what = "outcome")$trait[1]
+        exposure_trait <- subset(metadata, what == "exposure")$trait[1]
+        outcome_trait <- subset(metadata, what == "outcome")$trait[1]
 
         # Read exposure in once
         metadata_exp <- subset(metadata, what == "exposure")
-        rawdat <- mclapply(1:nrow(metadata_exp), \(i) read_file(metadata_exp[i,]), mc.cores=self$mc.cores)
+        rawdat <- parallel::mclapply(1:nrow(metadata_exp), \(i) self$read_file(metadata_exp[i,]), mc.cores=self$mc.cores)
 
         out <- subset(metadata, what == "outcome")$trait %>%
             unique() %>% {
@@ -209,10 +244,10 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
                 message(x)
 
                 temp <- subset(metadata, trait == x)
-                rawdat_this <- mclapply(1:nrow(temp), \(i) read_file(temp[i,]))
+                rawdat_this <- parallel::mclapply(1:nrow(temp), \(i) self$read_file(temp[i,]), mc.cores=self$mc.cores)
                 rawdat_this <- c(rawdat, rawdat_this)
 
-                a <- organise_data(subset(metadata, trait %in% c(exposure_trait, x)), self$plink_bin, self$ld_ref, self$mc.cores, rawdat=rawdat_this)
+                a <- self$organise_data(subset(metadata, trait %in% c(exposure_trait, x)), plink_bin=self$plink_bin, ld_ref=self$ld_ref, mc.cores=self$mc.cores, rawdat=rawdat_this)
                 return(a)
             })}
 
@@ -223,28 +258,28 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
         names(o$region_extract[[1]]) <- inst
         names(o$region_extract[[2]]) <- inst_o
 
-        instrument_raw <- o$tophit_pool %>% filter(target_trait == exposure_trait & trait == exposure_trait) %>% rename(position="pos", nea="oa", p="pval", rsid="vid")
-        instrument_outcome <- subset(o$tophit_pool, trait == outcome_trait & target_trait == exposure_trait & vid %in% instrument_raw$rsid) %>% rename(position="pos", nea="oa", p="pval", rsid="vid")
+        instrument_raw <- o$tophit_pool %>% dplyr::filter(target_trait == exposure_trait & trait == exposure_trait) %>% dplyr::rename(position="pos", nea="oa", p="pval", rsid="vid")
+        instrument_outcome <- subset(o$tophit_pool, trait == outcome_trait & target_trait == exposure_trait & vid %in% instrument_raw$rsid) %>% dplyr::rename(position="pos", nea="oa", p="pval", rsid="vid")
 
         # restrict regions to common snps
 
         instrument_raw
         instrument_regions <- lapply(unique(instrument_raw$rsid), \(x) {
             a <- o$region_extract[[1]][[x]] %>%
-                filter(trait == exposure_trait) %>%
-                rename(position="pos", nea="oa", p="pval", rsid="vid") %>%
-                group_by(pop) %>%
-                group_split() %>% as.list()
+                dplyr::filter(trait == exposure_trait) %>%
+                dplyr::rename(position="pos", nea="oa", p="pval", rsid="vid") %>%
+                dplyr::group_by(pop) %>%
+                dplyr::group_split() %>% as.list()
             names(a) <- sapply(a, \(z) z$id[1])
             a
         })
 
         instrument_outcome_regions <- lapply(unique(instrument_raw$rsid), \(x) {
             a <- o$region_extract[[1]][[x]] %>%
-                filter(trait == outcome_trait) %>%
-                rename(position="pos", nea="oa", p="pval", rsid="vid") %>%
-                group_by(pop) %>%
-                group_split() %>% as.list()
+                dplyr::filter(trait == outcome_trait) %>%
+                dplyr::rename(position="pos", nea="oa", p="pval", rsid="vid") %>%
+                dplyr::group_by(pop) %>%
+                dplyr::group_split() %>% as.list()
             names(a) <- sapply(a, \(z) z$id[1])
             a
         })

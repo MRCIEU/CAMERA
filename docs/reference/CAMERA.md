@@ -489,20 +489,54 @@ fine-mapping (Susie, PAINTOR) methods.
 - `alpha`:
 
   Statistical threshold to determine significance. Default is
-  "bonferroni", which is eqaul to 0.05/number of the instruments.
+  "bonferroni", which is eqaul to 0.05/number of the instruments. For
+  each pair of populations, the instruments that are significant
+  (`p < alpha`) in the reference population are taken and their
+  associations in the replication population are regressed on their
+  associations in the reference population. If the instruments have the
+  same effects in both populations the slope (`agreement`) is expected
+  to be close to 1.
 
 - `method`:
 
-  IVW or Simple MODE
+  Method used to estimate the agreement slope, either `"ivw"` (inverse
+  variance weighted, using
+  [`TwoSampleMR::mr_ivw()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_ivw.html))
+  or `"simple_mode"` (using
+  [`TwoSampleMR::mr_simple_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_simple_mode.html)).
+  Default is `"ivw"`.
 
 - `outlier_removal`:
 
   Remove outliers identified by radial IVW MR before estimating
-  heterogeneity. Default is `FALSE`.
+  heterogeneity. Only the first two exposures are used to identify
+  outliers. Default is `FALSE`.
 
 #### Returns
 
-Table of the result
+Data frame with one row for each ordered pair of populations, with
+columns:
+
+- `Reference`, `Replication`: IDs of the reference and replication
+  datasets
+
+- `nsnp`: number of instruments significant in the reference dataset
+  that are also present in the replication dataset
+
+- `agreement`: slope of the regression of the replication associations
+  on the reference associations
+
+- `se`, `pval`: standard error of `agreement` and p-value for the test
+  of the null hypothesis that the slope is 0 (i.e. no association
+  between the instrument associations in the two populations)
+
+- `Q`, `Q_pval` (`"ivw"` only): Cochran's Q statistic and its p-value
+  for the null hypothesis that all instruments share the same slope,
+  i.e. no heterogeneity in the agreement between populations
+
+- `I2` (`"ivw"` only): the proportion of the variation in the ratio of
+  the associations that is due to heterogeneity rather than chance,
+  calculated as `(Q - nsnp) / Q`
 
 ------------------------------------------------------------------------
 
@@ -538,10 +572,44 @@ estimates are the same.
 
   Use this option to correct winners' curse bias.
 
+#### Details
+
+For each pair of populations, the instruments that are significant
+(`p < alpha`) in the discovery population are compared with their
+associations in the replication population. Following Okbay et al.
+(2016), under the hypothesis that the instruments have the same effects
+in both populations, the expected number of instruments with the same
+sign, and the expected number with `p < alpha`, in the replication
+population are calculated taking account of the precision of the
+replication associations. These are compared with the observed numbers.
+
 #### Returns
 
-Table of the results. Summary of the results available in
-x\$instrument_specificity_summary.
+Data frame, also stored in `x$instrument_specificity_summary`, with
+columns:
+
+- `discovery`, `replication`: IDs of the discovery and replication
+  datasets
+
+- `metric`: `"Sign"` (the instrument has the same sign in both
+  populations) or `"P-value"` (the instrument has `p < alpha` in the
+  replication population)
+
+- `nsnp`: number of instruments compared
+
+- `datum`, `value`: the `"Expected"` and `"Observed"` number of
+  instruments meeting `metric`
+
+- `pdiff`: p-value from a binomial test of the null hypothesis that the
+  observed number equals the expected number. A small p-value suggests
+  the instruments replicate less (or more) than expected if their
+  effects were the same in both populations.
+
+Per variant results are stored in `x$instrument_specificity`, including
+the expected probabilities of sign agreement (`sign`) and replication
+(`sig`), and `distinct`, which flags instruments that were expected to
+replicate but did not (`sig > 0.8` and replication `p > 0.1`), or were
+expected to have the same sign but did not (`sign > 0.8`).
 
 ------------------------------------------------------------------------
 
@@ -623,9 +691,25 @@ populations. The results are stored in the `mrres` attribute of the
 
 #### Returns
 
-A list containing the results of the analysis. The list includes the
-coefficients of the fitted models, and the results of the heterogeneity
-analysis.
+Data frame, also stored in `x$mrres`, with one row for the estimate
+across all populations (`pops == "All"`) and one row for each
+population, with columns:
+
+- `pops`: population
+
+- `Estimate`, `Std. Error`, `t value`, `Pr(>|t|)`: the IVW MR estimate,
+  i.e. the weighted regression of the SNP-outcome associations on the
+  SNP-exposure associations through the origin with weights
+  `1 / se.y^2`, its standard error, t statistic and p-value
+
+- `Qj`, `Qjpval`, `Qdf`: for each population, the contribution of its
+  estimate to the heterogeneity between populations and its p-value (1
+  degree of freedom), from a fixed effects meta analysis of the
+  population estimates; a small p-value suggests the estimate in that
+  population differs from the others. For the `"All"` row these are
+  Cochran's Q statistic across all populations, its p-value (null
+  hypothesis: the same causal effect in all populations) and its degrees
+  of freedom.
 
 ------------------------------------------------------------------------
 
