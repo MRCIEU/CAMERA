@@ -34,6 +34,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     mc.cores = NULL,
     #' @field plink_bin Location of executable plink (version 1.90 is recommended)
     plink_bin = NULL,
+    #' @field radius Genomic window size to extract SNPs
+    radius = NULL,
     #' @field minmaf Minimum allele frequency per dataset
     minmaf = NULL,
     #' @field pthresh P-value threshold for instrument inclusion
@@ -52,6 +54,7 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     #' Create a new dataset and initialise an R interface
     initialize = function(metadata, ld_ref, plink_bin, mc.cores=1, radius = 25000, pthresh = 5e-8, minmaf=0.01) {
         self$metadata <- metadata
+        self$ld_ref <- ld_ref
         self$plink_bin <- plink_bin
         self$radius <- radius
         self$mc.cores <- mc.cores
@@ -90,22 +93,22 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
             oa = a[[m$oa_col]]
         ) %>%
         filter(eaf > minmaf & eaf < (1-minmaf)) %>%
-        standardise()
+        self$standardise()
         return(b)
     },
 
     #' @description
     #' Pool the top hits
-    pool_tophits = function(rawdat, tophits, metadata, radius = 250000, pthresh = 5e-8, mc.cores = 10) {
-        regions <- GRanges(
+    pool_tophits = function(rawdat, tophits, metadata, radius = 250000, pthresh = 5e-8, mc.cores = 1) {
+        regions <- GenomicRanges::GRanges(
             seqnames = tophits$chr,
-            ranges = IRanges(start=tophits$pos-radius, end=tophits$pos+radius),
+            ranges = IRanges::IRanges(start=tophits$pos-radius, end=tophits$pos+radius),
             vid=tophits$vid,
             pop=tophits$pop,
             trait=tophits$trait
         )
         region_list <- lapply(unique(tophits$trait), \(tr) {
-            temp <- reduce(subset(regions, trait == tr))
+            temp <- GenomicRanges::reduce(subset(regions, trait == tr))
             temp$trait <- tr
             temp
         })
@@ -138,7 +141,7 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
                     {subset(., z==max(z))$vid[1]}
                 a <- subset(a, vid == k) %>% dplyr::mutate(target_trait=target_trait)
                 return(a)
-            }, mc.cores=10) %>%
+            }, mc.cores=1) %>%
                 dplyr::bind_rows()
         }) %>% dplyr::bind_rows()
 
@@ -150,11 +153,11 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
 
     #' @description
     #' A function to organise the data
-    organise_data = function(metadata=self$metadata, plink_bin=self$plink_bin, ld_ref=self$ld_ref, pthresh=self$pthresh, minmaf = self$minmaf, radius = self$radius, mc.cores = self$mc.cores) {
+    organise_data = function(metadata=self$metadata, plink_bin=self$plink_bin, ld_ref=self$ld_ref, pthresh=self$pthresh, minmaf = self$minmaf, radius = self$radius, mc.cores = self$mc.cores, rawdat = NULL) {
         # read in data
 
         if(is.null(rawdat)) {
-            rawdat <- mclapply(1:nrow(metadata), \(i) read_file(metadata[i,]))
+            rawdat <- mclapply(1:nrow(metadata), \(i) self$read_file(metadata[i,]))
         }
 
         # get top hits for each
@@ -164,7 +167,7 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
                 dplyr::filter(pval < pthresh) %>%
                 dplyr::mutate(rsid = vid)
             if(nrow(x) > 1) {
-                ieugwasr::ld_clump(x, plink_bin=plink_bin, bfile=subset(ld_ref, pop == metadata$pop[i])$bfile) %>%
+                ieugwasr::ld_clump(x, plink_bin=plink_bin, bfile=subset(ld_ref, pop == metadata$pop[i])$bfile[1]) %>%
                     dplyr::select(-c(rsid)) %>%
                     dplyr::mutate(pop=metadata$pop[i], trait=metadata$trait[i])
             } else {
@@ -177,7 +180,7 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
         # Extract regions from each trait
         # Keep SNPs that have at least one GWAS sig and present in all
         # Clump to get tophits
-        out <- pool_tophits(rawdat, tophits, metadata, radius = radius, pthresh = pthresh, mc.cores = mc.cores)
+        out <- self$pool_tophits(rawdat, tophits, metadata, radius = radius, pthresh = pthresh, mc.cores = mc.cores)
         return(out)
     },
 
@@ -196,12 +199,12 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     organise = function() {
         metadata <- self$metadata
         ld_ref <- self$ld_ref
-        exposure_trait <- subset(metadata, what = "exposure")$trait[1]
-        outcome_trait <- subset(metadata, what = "outcome")$trait[1]
+        exposure_trait <- subset(metadata, what == "exposure")$trait[1]
+        outcome_trait <- subset(metadata, what == "outcome")$trait[1]
 
         # Read exposure in once
         metadata_exp <- subset(metadata, what == "exposure")
-        rawdat <- mclapply(1:nrow(metadata_exp), \(i) read_file(metadata_exp[i,]), mc.cores=self$mc.cores)
+        rawdat <- mclapply(1:nrow(metadata_exp), \(i) self$read_file(metadata_exp[i,]), mc.cores=self$mc.cores)
 
         out <- subset(metadata, what == "outcome")$trait %>%
             unique() %>% {
@@ -209,10 +212,10 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
                 message(x)
 
                 temp <- subset(metadata, trait == x)
-                rawdat_this <- mclapply(1:nrow(temp), \(i) read_file(temp[i,]))
+                rawdat_this <- mclapply(1:nrow(temp), \(i) self$read_file(temp[i,]))
                 rawdat_this <- c(rawdat, rawdat_this)
 
-                a <- organise_data(subset(metadata, trait %in% c(exposure_trait, x)), self$plink_bin, self$ld_ref, self$mc.cores, rawdat=rawdat_this)
+                a <- self$organise_data(subset(metadata, trait %in% c(exposure_trait, x)), self$plink_bin, self$ld_ref, self$mc.cores, rawdat=rawdat_this)
                 return(a)
             })}
 
