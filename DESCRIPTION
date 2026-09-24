@@ -24,9 +24,13 @@ Imports:
     magrittr,
     tidyr
 Suggests: 
+    data.table,
+    GenomicRanges,
     genetics.binaRies,
+    IRanges,
     knitr,
     lavaan,
+    parallel,
     RadialMR,
     rmarkdown,
     susieR,

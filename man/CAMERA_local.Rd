@@ -18,6 +18,8 @@ A simple wrapper function for importing data from local files for use with the C
 
     \item{\code{plink_bin}}{Location of executable plink (version 1.90 is recommended)}
 
+    \item{\code{radius}}{Genomic window size to extract SNPs}
+
     \item{\code{minmaf}}{Minimum allele frequency per dataset}
 
     \item{\code{pthresh}}{P-value threshold for instrument inclusion}
@@ -121,7 +123,7 @@ A simple wrapper function for importing data from local files for use with the C
   Function to read in a file
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{CAMERA_local$read_file(m, minmaf = 0.01)}
+    \preformatted{CAMERA_local$read_file(m, minmaf = self$minmaf)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -147,7 +149,7 @@ A simple wrapper function for importing data from local files for use with the C
   metadata,
   radius = 250000,
   pthresh = 5e-08,
-  mc.cores = 10
+  mc.cores = 1
 )}
     \if{html}{\out{</div>}}
   }
@@ -180,7 +182,8 @@ A simple wrapper function for importing data from local files for use with the C
   pthresh = self$pthresh,
   minmaf = self$minmaf,
   radius = self$radius,
-  mc.cores = self$mc.cores
+  mc.cores = self$mc.cores,
+  rawdat = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -195,6 +198,7 @@ A simple wrapper function for importing data from local files for use with the C
       \item{\code{radius}}{Genomic window size to extract SNPs}
       \item{\code{radius}}{Default 250000}
       \item{\code{mc.cores}}{Number of cores to use}
+      \item{\code{rawdat}}{The raw data}
     }
     \if{html}{\out{</div>}}
   }
