@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CAMeRa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,10 @@
       <small>Source: <a href="https://github.com/MRCIEU/CAMERA/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.3" id="camera-013">CAMeRa 0.1.3<a class="anchor" aria-label="anchor" href="#camera-013"></a></h2>
+<ul><li>Fix <code>CAMERA_local</code> so it can be initialised and run: add the missing <code>radius</code> field, store <code>ld_ref</code>, call the class’s own methods, fix the exposure/outcome subsetting, stop <code>mc.cores</code> being passed as <code>pthresh</code>, use <code>mc.cores</code> (default 1, so it works on Windows) in all parallel calls, use the <code>minmaf</code> setting when reading files, and declare its dependencies (data.table, GenomicRanges, IRanges, parallel) in Suggests (thanks <a href="https://github.com/Mercy-Kimani" class="external-link">@Mercy-Kimani</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="camera-012">CAMeRa 0.1.2<a class="anchor" aria-label="anchor" href="#camera-012"></a></h2>
 <ul><li>Additional amends to the tutorial

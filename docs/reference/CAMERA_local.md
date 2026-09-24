@@ -23,6 +23,10 @@ with the CAMERA class.
 
   Location of executable plink (version 1.90 is recommended)
 
+- `radius`:
+
+  Genomic window size to extract SNPs
+
 - `minmaf`:
 
   Minimum allele frequency per dataset
@@ -186,7 +190,7 @@ Function to read in a file
 
 #### Usage
 
-    CAMERA_local$read_file(m, minmaf = 0.01)
+    CAMERA_local$read_file(m, minmaf = self$minmaf)
 
 #### Arguments
 
@@ -212,7 +216,7 @@ Pool the top hits
       metadata,
       radius = 250000,
       pthresh = 5e-08,
-      mc.cores = 10
+      mc.cores = 1
     )
 
 #### Arguments
@@ -261,7 +265,8 @@ A function to organise the data
       pthresh = self$pthresh,
       minmaf = self$minmaf,
       radius = self$radius,
-      mc.cores = self$mc.cores
+      mc.cores = self$mc.cores,
+      rawdat = NULL
     )
 
 #### Arguments
@@ -299,6 +304,10 @@ A function to organise the data
 - `mc.cores`:
 
   Number of cores to use
+
+- `rawdat`:
+
+  The raw data
 
 ------------------------------------------------------------------------
 
