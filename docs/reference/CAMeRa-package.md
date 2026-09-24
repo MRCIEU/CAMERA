@@ -27,3 +27,8 @@ Authors:
 
 - Tom Palmer <tom.palmer@bristol.ac.uk>
   ([ORCID](https://orcid.org/0000-0003-4655-4511))
+
+Other contributors:
+
+- Amy Mason <am2609@medschl.cam.ac.uk>
+  ([ORCID](https://orcid.org/0000-0002-8019-0777)) \[contributor\]
