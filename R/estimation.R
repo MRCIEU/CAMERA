@@ -3,7 +3,10 @@
 #'
 #' @param dat A data frame containing the harmonised data. It should have the columns `beta.y`, `beta.x`, `se.y`, and `pops`. If not provided, the method uses the `harmonised_dat` attribute of the `CAMERA` object.
 #'
-#' @return A list containing the results of the analysis. The list includes the coefficients of the fitted models, and the results of the heterogeneity analysis.
+#' @return Data frame, also stored in `x$mrres`, with one row for the estimate across all populations (`pops == "All"`) and one row for each population, with columns:
+#' - `pops`: population
+#' - `Estimate`, `Std. Error`, `t value`, `Pr(>|t|)`: the IVW MR estimate, i.e. the weighted regression of the SNP-outcome associations on the SNP-exposure associations through the origin with weights `1 / se.y^2`, its standard error, t statistic and p-value
+#' - `Qj`, `Qjpval`, `Qdf`: for each population, the contribution of its estimate to the heterogeneity between populations and its p-value (1 degree of freedom), from a fixed effects meta analysis of the population estimates; a small p-value suggests the estimate in that population differs from the others. For the `"All"` row these are Cochran's Q statistic across all populations, its p-value (null hypothesis: the same causal effect in all populations) and its degrees of freedom.
 CAMERA$set("public", "cross_estimate", function(dat=self$harmonised_dat) {
   mod1 <- stats::lm(beta.y ~ -1 + beta.x, data=dat, weight=1/dat$se.y^2)
   mod2 <- stats::lm(beta.y ~ -1 + beta.x:as.factor(pops), data=dat, weight=1/dat$se.y^2)
