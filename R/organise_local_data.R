@@ -2,8 +2,30 @@
 #' @docType class
 #' @description
 #' A simple wrapper function for importing data from local files for use with the CAMERA class.
-#' @param metadata Data frame with information about the data. One row per dataset. See details for info on columns
-#' @param ld_ref Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference
+#'
+#' Create the object with `CAMERA_local$new()` and then call its `organise()` method. This reads the summary statistics files listed in `metadata`, finds and clumps the top hits for each dataset, pools them across populations, and extracts the region around each instrument from every dataset. The results are stored in the `instrument_raw`, `instrument_outcome`, `instrument_regions` and `instrument_outcome_regions` fields, which can be passed to the `import_from_local()` method of a [CAMERA] object.
+#'
+#' See `vignette("import-local", package = "CAMeRa")` for a worked example.
+#'
+#' @details
+#' `metadata` must be a data frame with one row per summary statistics file (i.e. per trait and population) and the following columns:
+#'
+#' - `what`: either `"exposure"` or `"outcome"`
+#' - `trait`: name of the trait, the same for all populations of a trait
+#' - `pop`: population, e.g. `"EUR"`; must match the `pop` column of `ld_ref`
+#' - `id`: a unique identifier for the dataset
+#' - `fn`: path to the summary statistics file, which is read with [data.table::fread()]
+#' - `chr_col`, `pos_col`, `ea_col`, `oa_col`, `eaf_col`, `beta_col`, `se_col`, `pval_col`: the name or number of the column in the file containing the chromosome, base pair position, effect allele, other allele, effect allele frequency, effect estimate, standard error, and p-value respectively
+#'
+#' Other columns are ignored. Variants are identified by chromosome, position and alleles (as `chr:pos_a1_a2`, with the alleles in alphabetical order), so all files must use the same genome build.
+#'
+#' `ld_ref` must be a data frame with columns `pop` and `bfile`, giving for each population the path to a PLINK binary fileset (without the `.bed`/`.bim`/`.fam` extension) used as the LD reference for clumping.
+#'
+#' Top hits are only taken from datasets with at least two variants with p-value below `pthresh`. Currently `organise()` uses the first exposure trait and the first outcome trait in `metadata`.
+#'
+#' @seealso [CAMERA], `vignette("import-local", package = "CAMeRa")`
+#' @param metadata Data frame with information about the data. One row per dataset. See Details for the required columns
+#' @param ld_ref Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference. See Details
 #' @param plink_bin Location of executable plink (version 1.90 is recommended)
 #' @param radius Genomic window size to extract SNPs
 #' @param clump_pop Reference population for clumping
@@ -26,7 +48,7 @@
 #' @param se_mat Matrix of SEs
 #' @export
 CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
-    #' @field metadata Data frame with information about the data. One row per dataset. See details for info on columns
+    #' @field metadata Data frame with information about the data. One row per dataset. See Details for the required columns
     metadata = NULL,
     #' @field ld_ref Data frame with two columns - pop = population (referencing the pop values in metadata), bfile = path to plink file for that reference
     ld_ref = NULL,
@@ -51,7 +73,7 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
 
     # Methods
     #' @description
-    #' Create a new dataset and initialise an R interface
+    #' Create a new `CAMERA_local` object
     initialize = function(metadata, ld_ref, plink_bin, mc.cores=1, radius = 25000, pthresh = 5e-8, minmaf=0.01) {
         for (pkg in c("data.table", "GenomicRanges", "IRanges")) {
             if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -68,7 +90,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' Standardise the allele coding
+    #' Standardise the allele coding so that the effect allele is the alphabetically first allele, flipping the effect estimate and allele frequency where needed, and create a variant ID of the form `chr:pos_ea_oa`
+    #' @return `d` with standardised alleles and a variant ID column
     standardise = function(d, ea_col="ea", oa_col="oa", beta_col="beta", eaf_col="eaf", chr_col="chr", pos_col="pos", vid_col="vid") {
         toflip <- d[[ea_col]] > d[[oa_col]]
         d[[eaf_col]][toflip] <- 1 - d[[eaf_col]][toflip]
@@ -81,7 +104,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' Function to read in a file
+    #' Read in the summary statistics file for one dataset, drop variants with minor allele frequency below `minmaf`, and standardise the alleles
+    #' @return A tibble with columns `chr`, `pos`, `eaf`, `beta`, `se`, `pval`, `ea`, `oa` and `vid`
     read_file = function(m, minmaf=self$minmaf) {
         stopifnot(nrow(m) == 1)
         stopifnot(file.exists(m$fn))
@@ -103,7 +127,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' Pool the top hits
+    #' Pool the top hits across datasets. For each trait, the regions within `radius` of its top hits are merged, and the variants in each region are extracted from every dataset. Within each region the variant with the largest absolute z-score for the trait is selected, considering only variants present in a number of datasets for which at least one such variant has p-value below `pthresh`
+    #' @return A list with elements `region_list` (the merged regions for each trait), `region_extract` (the extracted variants in each region) and `tophit_pool` (the selected variant from each region in every dataset)
     pool_tophits = function(rawdat, tophits, metadata, radius = 250000, pthresh = 5e-8, mc.cores = 1) {
         regions <- GenomicRanges::GRanges(
             seqnames = tophits$chr,
@@ -157,7 +182,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' A function to organise the data
+    #' Read in the data (unless `rawdat` is supplied), find the top hits in each dataset by clumping the variants with p-value below `pthresh` using [ieugwasr::ld_clump()], and pool them with `pool_tophits()`
+    #' @return As for `pool_tophits()`
     organise_data = function(metadata=self$metadata, plink_bin=self$plink_bin, ld_ref=self$ld_ref, pthresh=self$pthresh, minmaf = self$minmaf, radius = self$radius, mc.cores = self$mc.cores, rawdat = NULL) {
         # read in data
 
@@ -190,7 +216,8 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' A function to perform fixed effect meta-analysis
+    #' Fixed effect inverse variance weighted meta-analysis of each row of `beta_mat` and `se_mat`
+    #' @return A vector of p-values, one per row
     fixed_effects_meta_analysis_fast = function(beta_mat, se_mat) {
         w <- 1 / se_mat^2
         beta <- rowSums(beta_mat * w, na.rm=TRUE) / rowSums(w, na.rm=TRUE)
@@ -200,7 +227,7 @@ CAMERA_local <- R6::R6Class("CAMERA_local", public = list(
     },
 
     #' @description
-    #' Organise the output
+    #' Organise the data for the exposure and outcome, populating the `instrument_raw`, `instrument_outcome`, `instrument_regions` and `instrument_outcome_regions` fields
     organise = function() {
         metadata <- self$metadata
         ld_ref <- self$ld_ref
