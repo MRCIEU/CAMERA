@@ -834,9 +834,9 @@ In addition, for every SNP it gives a per population p-value - this can be inter
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{CAMERA$mrgxe_plot_variant(
-  variant = self$mrgxe_res \%>\% dplyr::filter(p.adjust(a_pval, "fdr") < 0.05) \%>\% {
-  
-      .$SNP
+  variant = self$mrgxe_res \%>\% dplyr::ungroup() \%>\% dplyr::filter(p.adjust(a_pval,
+    "fdr") < 0.05) \%>\% {
+     .$SNP
  },
   dat = self$harmonised_dat
 )}
