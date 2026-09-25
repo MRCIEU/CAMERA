@@ -1,9 +1,6 @@
-# CAMeRa 0.1.4.9000
-
-* `extract_instruments()` and `check_phenotypes()` now harmonise with TwoSampleMR `action = 1`, assuming all alleles are on the forward strand as they are in OpenGWAS. Previously the default `action = 2` inferred the strand of palindromic SNPs from their allele frequencies, which differ between populations, so palindromic SNPs whose allele frequencies were on different sides of 0.5 in the reference population had their `beta` and `eaf` wrongly flipped, and palindromic SNPs with intermediate allele frequencies were dropped. `extract_instruments()` gains a `harmonise_strictness` argument.
-
 # CAMeRa 0.1.4
 
+* `extract_instruments()` and `check_phenotypes()` now harmonise with TwoSampleMR `action = 1`, assuming all alleles are on the forward strand as they are in OpenGWAS. Previously the default `action = 2` inferred the strand of palindromic SNPs from their allele frequencies, which differ between populations, so palindromic SNPs whose allele frequencies were on different sides of 0.5 in the reference population had their `beta` and `eaf` wrongly flipped, and palindromic SNPs with intermediate allele frequencies were dropped. `extract_instruments()` gains a `harmonise_strictness` argument.
 * Bump the required version of ieugwasr
 
 # CAMeRa 0.1.3
