@@ -19,10 +19,11 @@ CAMERA$set("public", "estimate_instrument_heterogeneity_per_variant", function(d
                 SNP = .$SNP[1],
                 Qdf = o$Qdf,
                 Q = o$Q,
-                Qpval = o$Qpval,
-                Qfdr = p.adjust(Qpval, "fdr")
+                Qpval = o$Qpval
             )
-        })
+        }) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(Qfdr = p.adjust(Qpval, "fdr"))
     return(self$instrument_heterogeneity_per_variant)
 })
 
@@ -98,7 +99,8 @@ CAMERA$set("public", "mrgxe", function(dat = self$harmonised_dat, variant_list =
         dplyr::do({
             egger_bootstrap(.$beta.x, .$se.x, .$beta.y, .$se.y, nboot) %>%
                 dplyr::mutate(SNP=.$SNP[1])
-        })
+        }) %>%
+        dplyr::ungroup()
     return(self$mrgxe_res)
 })
 
@@ -123,7 +125,7 @@ CAMERA$set("public", "mrgxe_plot", function(mrgxe_res = self$mrgxe_res) {
 #' @param variant SNPs to plot. Default is the SNPs with FDR < 0.05 for the pleiotropy estimate in `x$mrgxe_res`.
 #' @param dat Harmonised data. Default is `x$harmonised_dat`.
 #' @return Plot
-CAMERA$set("public", "mrgxe_plot_variant", function(variant = self$mrgxe_res %>% dplyr::filter(p.adjust(a_pval, "fdr") < 0.05) %>% {.$SNP}, dat = self$harmonised_dat) {
+CAMERA$set("public", "mrgxe_plot_variant", function(variant = self$mrgxe_res %>% dplyr::ungroup() %>% dplyr::filter(p.adjust(a_pval, "fdr") < 0.05) %>% {.$SNP}, dat = self$harmonised_dat) {
     dat <- subset(dat, SNP %in% variant)
     ind <- dat$beta.x < 0
     dat$beta.x <- abs(dat$beta.x)

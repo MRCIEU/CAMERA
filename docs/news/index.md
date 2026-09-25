@@ -1,5 +1,24 @@
 # Changelog
 
+## CAMeRa 0.1.4
+
+- `extract_instruments()` and `check_phenotypes()` now harmonise with
+  TwoSampleMR `action = 1`, assuming all alleles are on the forward
+  strand as they are in OpenGWAS. Previously the default `action = 2`
+  inferred the strand of palindromic SNPs from their allele frequencies,
+  which differ between populations, so palindromic SNPs whose allele
+  frequencies were on different sides of 0.5 in the reference population
+  had their `beta` and `eaf` wrongly flipped, and palindromic SNPs with
+  intermediate allele frequencies were dropped. `extract_instruments()`
+  gains a `harmonise_strictness` argument.
+- Fix the FDR adjustment in
+  `estimate_instrument_heterogeneity_per_variant()` and
+  `mrgxe_plot_variant()`. It was applied separately to each SNP, so
+  `Qfdr` equalled `Qpval` and the default SNP selections in `mrgxe()`
+  and `mrgxe_plot_variant()` used unadjusted p-values. `mrgxe()` now
+  returns an ungrouped tibble.
+- Bump the required version of ieugwasr
+
 ## CAMeRa 0.1.3
 
 - Fix `CAMERA_local` so it can be initialised and run: add the missing

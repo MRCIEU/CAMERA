@@ -174,7 +174,7 @@ We will perform an inverse variance weighted fixed effects MR method within popu
 x$cross_estimate()
 ```
 
-In this example the estimates are broadly consistent across ancestries, although the EAS estimate is somewhat larger than the others (see the `Qjpval` column). Note that the `All` estimate is slightly more precisely estimated than any of the others because it is combining similar estimates.
+In this example the estimates are broadly similar across ancestries, although the EAS estimate is somewhat larger than the others and the AFR estimate is smaller and imprecise (see the `Qjpval` column), and the `Qjpval` of the `All` row gives some evidence of heterogeneity across the populations. Note that the `All` estimate is more precisely estimated than any of the others because it is combining the information across populations.
 
 We can visualise the estimates:
 
@@ -230,7 +230,7 @@ Re-estimate the MR associations using the newly derived regional instruments
 x$cross_estimate()
 ```
 
-In this example the estimates are more consistent across ancestries than with the raw instruments (compare the `Qjpval` values), although they are slightly less precise.
+In this example the estimates are more consistent across ancestries than with the raw instruments (compare the `Qjpval` values), and are similarly precise.
 
 ```{r}
 x$plot_cross_estimate()
@@ -242,7 +242,7 @@ Evaluate instrument specificity. First using heterogeneity
 x$instrument_heterogeneity(x$instrument_fema)
 ```
 
-In this example, compared to above, the `agreement` regression slopes are closer to 1 for most pairs of ancestries.
+In this example, compared to above, the `agreement` regression slopes are closer to 1 for all pairs of ancestries.
 
 ```{r}
 x$estimate_instrument_specificity(x$instrument_fema, alpha = "bonferroni")
@@ -302,7 +302,7 @@ Identify any variants that showed substantial differences in pleiotropy deviatio
 x$plot_pleiotropy_heterogeneity(pthresh=0.05)
 ```
 
-In this example one SNP shows evidence of differences in pleiotropy deviation across populations, driven by the very imprecise estimate in AFR. Plot everything by relaxing the threshold
+In this example two SNPs show evidence of differences in pleiotropy deviation across populations. For 17:2133205_C_T this is driven by the very imprecise estimate in AFR, and for 3:48118703_C_T by the SAS and EUR estimates deviating in opposite directions. Plot everything by relaxing the threshold
 
 ```{r}
 x$plot_pleiotropy_heterogeneity(pthresh=1)
@@ -323,8 +323,8 @@ x$instrument_heterogeneity_per_variant %>% dplyr::filter(Qfdr < 0.05)
 Next perform MR GxE (may take a couple of minutes while bootstrapping standard errors)
 
 ```{r}
+set.seed(1234)
 x$mrgxe()
-x$mrgxe_res
 ```
 
 This is the distribution of the estimate of the pleiotropic effect of each SNP that showed heterogeneity
@@ -333,16 +333,16 @@ This is the distribution of the estimate of the pleiotropic effect of each SNP t
 x$mrgxe_plot()
 ```
 
-Any evidence of SNPs with substantial heterogeneity?
+Any SNPs with evidence of a pleiotropic effect?
 
 ```{r}
 x$mrgxe_res %>% dplyr::filter(p.adjust(a_pval, "fdr") < 0.05)
 ```
 
-It's worth always checking if these look credible e.g. this plots the SNP-exposure against SNP-outcome associations for the identified SNPs. You'd expect to see a slope reflecting the causal effect estimate with the intercept reflecting the pleiotropic association. 
+In this example none of the pleiotropy estimates pass FDR < 0.05. It's worth always checking if any SNPs look credible e.g. this plots the SNP-exposure against SNP-outcome associations for the SNPs with nominal p < 0.05 (by default `mrgxe_plot_variant()` plots the SNPs with FDR < 0.05). You'd expect to see a slope reflecting the causal effect estimate with the intercept reflecting the pleiotropic association.
 
 ```{r}
-x$mrgxe_plot_variant()
+x$mrgxe_plot_variant(subset(x$mrgxe_res, a_pval < 0.05)$SNP)
 ```
 
 In this case the associations are very noisy, and it would be difficult to justify that they show convincing evidence of the pleiotropy estimate.

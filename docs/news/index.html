@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">CAMeRa</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,6 +35,13 @@
       <small>Source: <a href="https://github.com/MRCIEU/CAMERA/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.4" id="camera-014">CAMeRa 0.1.4<a class="anchor" aria-label="anchor" href="#camera-014"></a></h2>
+<ul><li>
+<code>extract_instruments()</code> and <code>check_phenotypes()</code> now harmonise with TwoSampleMR <code>action = 1</code>, assuming all alleles are on the forward strand as they are in OpenGWAS. Previously the default <code>action = 2</code> inferred the strand of palindromic SNPs from their allele frequencies, which differ between populations, so palindromic SNPs whose allele frequencies were on different sides of 0.5 in the reference population had their <code>beta</code> and <code>eaf</code> wrongly flipped, and palindromic SNPs with intermediate allele frequencies were dropped. <code>extract_instruments()</code> gains a <code>harmonise_strictness</code> argument.</li>
+<li>Fix the FDR adjustment in <code>estimate_instrument_heterogeneity_per_variant()</code> and <code>mrgxe_plot_variant()</code>. It was applied separately to each SNP, so <code>Qfdr</code> equalled <code>Qpval</code> and the default SNP selections in <code>mrgxe()</code> and <code>mrgxe_plot_variant()</code> used unadjusted p-values. <code>mrgxe()</code> now returns an ungrouped tibble.</li>
+<li>Bump the required version of ieugwasr</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.3" id="camera-013">CAMeRa 0.1.3<a class="anchor" aria-label="anchor" href="#camera-013"></a></h2>
 <ul><li>Fix <code>CAMERA_local</code> so it can be initialised and run: add the missing <code>radius</code> field, store <code>ld_ref</code>, call the class’s own methods, fix the exposure/outcome subsetting, stop <code>mc.cores</code> being passed as <code>pthresh</code>, use <code>mc.cores</code> (default 1, so it works on Windows) in all parallel calls, use the <code>minmaf</code> setting when reading files, and declare its dependencies (data.table, GenomicRanges, IRanges, parallel) in Suggests (thanks <a href="https://github.com/Mercy-Kimani" class="external-link">@Mercy-Kimani</a>)</li>

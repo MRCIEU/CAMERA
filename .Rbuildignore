@@ -11,3 +11,4 @@
 ^Meta$
 ^\.github$
 ^vignettes/.*_cache$
+^justfile$
