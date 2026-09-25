@@ -342,11 +342,13 @@ combined information.
 `#> ``4`` EUR      0.423       0.032``9``    12.9     5.81``e``-36`` 0.374 0.541      1`\
 `#> ``5`` SAS      0.353       0.136      2.59    9.57``e``- 3`` 0.441 0.506      1`
 
-In this example the estimates are broadly consistent across ancestries,
-although the EAS estimate is somewhat larger than the others (see the
-`Qjpval` column). Note that the `All` estimate is slightly more
-precisely estimated than any of the others because it is combining
-similar estimates.
+In this example the estimates are broadly similar across ancestries,
+although the EAS estimate is somewhat larger than the others and the AFR
+estimate is smaller and imprecise (see the `Qjpval` column), and the
+`Qjpval` of the `All` row gives some evidence of heterogeneity across
+the populations. Note that the `All` estimate is more precisely
+estimated than any of the others because it is combining the information
+across populations.
 
 We can visualise the estimates:
 
@@ -486,8 +488,8 @@ instruments
 `#> ``5`` SAS      0.375       0.133       2.81   5.00``e``- 3`` 0.347   0.556     1`
 
 In this example the estimates are more consistent across ancestries than
-with the raw instruments (compare the `Qjpval` values), although they
-are slightly less precise.
+with the raw instruments (compare the `Qjpval` values), and are
+similarly precise.
 
 \
 `x``$``plot_cross_estimate``(``)`
@@ -510,7 +512,7 @@ Evaluate instrument specificity. First using heterogeneity
 `#> ``# ℹ 1 more variable: Q_pval <dbl>`
 
 In this example, compared to above, the `agreement` regression slopes
-are closer to 1 for most pairs of ancestries.
+are closer to 1 for all pairs of ancestries.
 
 \
 `x``$``estimate_instrument_specificity``(``x``$``instrument_fema``, alpha ``=`` ``"bonferroni"``)`\
@@ -680,9 +682,11 @@ from the heterogeneity analysis
 
 ![](tutorial_files/figure-html/unnamed-chunk-31-1.png)
 
-In this example one SNP shows evidence of differences in pleiotropy
-deviation across populations, driven by the very imprecise estimate in
-AFR. Plot everything by relaxing the threshold
+In this example two SNPs show evidence of differences in pleiotropy
+deviation across populations. For 17:2133205_C_T this is driven by the
+very imprecise estimate in AFR, and for 3:48118703_C_T by the SAS and
+EUR estimates deviating in opposite directions. Plot everything by
+relaxing the threshold
 
 \
 `x``$``plot_pleiotropy_heterogeneity``(``pthresh``=``1``)`
@@ -707,73 +711,55 @@ associations
 \
 `x``$``estimate_instrument_heterogeneity_per_variant``(``)`\
 `#> ``# A tibble: 381 × 5`\
-`#> ``# Groups:   SNP [381]`\
-`#>    SNP                Qdf      Q     Qpval      Qfdr`\
-`#>    ``<chr>``            ``<dbl>``  ``<dbl>``     ``<dbl>``     ``<dbl>`\
-`#> `` 1`` 10:104942244_G_T     3  0.650 0.885     0.885    `\
-`#> `` 2`` 10:118650996_C_T     3 17.7   0.000``502``  0.000``502`` `\
-`#> `` 3`` 10:132953074_C_T     3 22.3   0.000``055``6 0.000``055``6`\
-`#> `` 4`` 10:134007008_A_C     3  8.12  0.043``6``    0.043``6``   `\
-`#> `` 5`` 10:16750129_G_T      3  0.510 0.917     0.917    `\
-`#> `` 6`` 10:18573654_A_G      3  6.63  0.084``7``    0.084``7``   `\
-`#> `` 7`` 10:21830104_A_G      3  3.19  0.363     0.363    `\
-`#> `` 8`` 10:33955430_C_T      3 13.5   0.003``75``   0.003``75``  `\
-`#> `` 9`` 10:53673286_A_G      3  4.26  0.235     0.235    `\
-`#> ``10`` 10:61842645_C_T      3  6.16  0.104     0.104    `\
+`#>    SNP                Qdf      Q     Qpval    Qfdr`\
+`#>    ``<chr>``            ``<dbl>``  ``<dbl>``     ``<dbl>``   ``<dbl>`\
+`#> `` 1`` 10:104942244_G_T     3  0.650 0.885     0.926  `\
+`#> `` 2`` 10:118650996_C_T     3 17.7   0.000``502``  0.007``10`\
+`#> `` 3`` 10:132953074_C_T     3 22.3   0.000``055``6 0.001``25`\
+`#> `` 4`` 10:134007008_A_C     3  8.12  0.043``6``    0.173  `\
+`#> `` 5`` 10:16750129_G_T      3  0.510 0.917     0.941  `\
+`#> `` 6`` 10:18573654_A_G      3  6.63  0.084``7``    0.238  `\
+`#> `` 7`` 10:21830104_A_G      3  3.19  0.363     0.574  `\
+`#> `` 8`` 10:33955430_C_T      3 13.5   0.003``75``   0.027``5`` `\
+`#> `` 9`` 10:53673286_A_G      3  4.26  0.235     0.457  `\
+`#> ``10`` 10:61842645_C_T      3  6.16  0.104     0.264  `\
 `#> ``# ℹ 371 more rows`\
 `x``$``instrument_heterogeneity_per_variant`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` ``dplyr``::`[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(``Qfdr`` ``<`` ``0.05``)`\
-`#> ``# A tibble: 100 × 5`\
-`#> ``# Groups:   SNP [100]`\
-`#>    SNP                Qdf     Q      Qpval       Qfdr`\
-`#>    ``<chr>``            ``<dbl>`` ``<dbl>``      ``<dbl>``      ``<dbl>`\
-`#> `` 1`` 10:118650996_C_T     3 17.7  0.000``502``   0.000``502``  `\
-`#> `` 2`` 10:132953074_C_T     3 22.3  0.000``055``6  0.000``055``6 `\
-`#> `` 3`` 10:134007008_A_C     3  8.12 0.043``6``     0.043``6``    `\
-`#> `` 4`` 10:33955430_C_T      3 13.5  0.003``75``    0.003``75``   `\
-`#> `` 5`` 10:87490850_A_G      3  8.51 0.036``5``     0.036``5``    `\
-`#> `` 6`` 10:99772885_A_G      3 18.8  0.000``298``   0.000``298``  `\
-`#> `` 7`` 11:130795698_G_T     3 14.5  0.002``32``    0.002``32``   `\
-`#> `` 8`` 11:13315205_C_T      3 11.9  0.007``86``    0.007``86``   `\
-`#> `` 9`` 11:134589355_A_T     3  8.65 0.034``3``     0.034``3``    `\
-`#> ``10`` 11:2858440_A_G       3 29.5  0.000``001``79 0.000``001``79`\
-`#> ``# ℹ 90 more rows`
+`#> ``# A tibble: 65 × 5`\
+`#>    SNP                Qdf     Q      Qpval     Qfdr`\
+`#>    ``<chr>``            ``<dbl>`` ``<dbl>``      ``<dbl>``    ``<dbl>`\
+`#> `` 1`` 10:118650996_C_T     3  17.7 0.000``502``   0.007``10`` `\
+`#> `` 2`` 10:132953074_C_T     3  22.3 0.000``055``6  0.001``25`` `\
+`#> `` 3`` 10:33955430_C_T      3  13.5 0.003``75``    0.027``5``  `\
+`#> `` 4`` 10:99772885_A_G      3  18.8 0.000``298``   0.004``94`` `\
+`#> `` 5`` 11:130795698_G_T     3  14.5 0.002``32``    0.021``3``  `\
+`#> `` 6`` 11:13315205_C_T      3  11.9 0.007``86``    0.046``4``  `\
+`#> `` 7`` 11:2858440_A_G       3  29.5 0.000``001``79 0.000``170`\
+`#> `` 8`` 11:43648368_G_T      3  12.4 0.006``27``    0.041``2``  `\
+`#> `` 9`` 11:65640906_C_T      3  24.2 0.000``022``2  0.000``732`\
+`#> ``10`` 12:103658096_A_G     3  13.2 0.004``28``    0.030``1``  `\
+`#> ``# ℹ 55 more rows`
 
 Next perform MR GxE (may take a couple of minutes while bootstrapping
 standard errors)
 
 \
+[`set.seed`](https://rdrr.io/r/base/Random.html)`(``1234``)`\
 `x``$``mrgxe``(``)`\
-`#> ``# A tibble: 100 × 9`\
-`#> ``# Groups:   SNP [100]`\
-`#>    SNP                     a       b   a_se  b_se a_pval b_pval   a_mean b_mean`\
-`#>    ``<chr>``               ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``    ``<dbl>``  ``<dbl>`\
-`#> `` 1`` 10:118650996_C_T  0.045``0``   2.14   0.024``9``  1.65 0.035``3`` 0.097``6``  0.045``2``   1.93 `\
-`#> `` 2`` 10:132953074_C_T -``0.039``9``   3.84   0.038``0``  3.47 0.147  0.134  -``0.041``3``   1.11 `\
-`#> `` 3`` 10:134007008_A_C  0.003``26``  0.805  0.026``7``  2.45 0.451  0.371   0.007``53``  0.684`\
-`#> `` 4`` 10:33955430_C_T   0.006``10`` -``0.195``  0.037``4``  1.66 0.435  0.453   0.016``0``  -``0.575`\
-`#> `` 5`` 10:87490850_A_G  -``0.019``4``  -``0.030``5`` 0.042``6``  2.04 0.325  0.494  -``0.027``2``  -``0.130`\
-`#> `` 6`` 10:99772885_A_G  -``0.019``5``  -``1.48``   0.029``6``  1.94 0.255  0.223  -``0.018``8``  -``1.24`` `\
-`#> `` 7`` 11:130795698_G_T -``0.011``0``   2.17   0.040``1``  2.16 0.392  0.158  -``0.016``9``   2.35 `\
-`#> `` 8`` 11:13315205_C_T   0.001``68``  0.283  0.023``6``  1.85 0.472  0.439   0.002``85``  0.341`\
-`#> `` 9`` 11:134589355_A_T  0.075``6``  -``4.77``   0.087``6``  3.20 0.194  0.067``9``  0.057``9``  -``3.77`` `\
-`#> ``10`` 11:2858440_A_G   -``0.084``8``   1.42   0.117   2.78 0.234  0.304  -``0.076``0``   0.799`\
-`#> ``# ℹ 90 more rows`\
-`x``$``mrgxe_res`\
-`#> ``# A tibble: 100 × 9`\
-`#> ``# Groups:   SNP [100]`\
-`#>    SNP                     a       b   a_se  b_se a_pval b_pval   a_mean b_mean`\
-`#>    ``<chr>``               ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``    ``<dbl>``  ``<dbl>`\
-`#> `` 1`` 10:118650996_C_T  0.045``0``   2.14   0.024``9``  1.65 0.035``3`` 0.097``6``  0.045``2``   1.93 `\
-`#> `` 2`` 10:132953074_C_T -``0.039``9``   3.84   0.038``0``  3.47 0.147  0.134  -``0.041``3``   1.11 `\
-`#> `` 3`` 10:134007008_A_C  0.003``26``  0.805  0.026``7``  2.45 0.451  0.371   0.007``53``  0.684`\
-`#> `` 4`` 10:33955430_C_T   0.006``10`` -``0.195``  0.037``4``  1.66 0.435  0.453   0.016``0``  -``0.575`\
-`#> `` 5`` 10:87490850_A_G  -``0.019``4``  -``0.030``5`` 0.042``6``  2.04 0.325  0.494  -``0.027``2``  -``0.130`\
-`#> `` 6`` 10:99772885_A_G  -``0.019``5``  -``1.48``   0.029``6``  1.94 0.255  0.223  -``0.018``8``  -``1.24`` `\
-`#> `` 7`` 11:130795698_G_T -``0.011``0``   2.17   0.040``1``  2.16 0.392  0.158  -``0.016``9``   2.35 `\
-`#> `` 8`` 11:13315205_C_T   0.001``68``  0.283  0.023``6``  1.85 0.472  0.439   0.002``85``  0.341`\
-`#> `` 9`` 11:134589355_A_T  0.075``6``  -``4.77``   0.087``6``  3.20 0.194  0.067``9``  0.057``9``  -``3.77`` `\
-`#> ``10`` 11:2858440_A_G   -``0.084``8``   1.42   0.117   2.78 0.234  0.304  -``0.076``0``   0.799`\
-`#> ``# ℹ 90 more rows`
+`#> ``# A tibble: 65 × 9`\
+`#>    SNP                     a      b   a_se  b_se a_pval b_pval   a_mean  b_mean`\
+`#>    ``<chr>``               ``<dbl>``  ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``    ``<dbl>``   ``<dbl>`\
+`#> `` 1`` 10:118650996_C_T  0.045``0``   2.14  0.025``3``  1.60 0.037``7`` 0.090``3``  0.045``9``   2.10  `\
+`#> `` 2`` 10:132953074_C_T -``0.039``9``   3.84  0.034``6``  3.34 0.125  0.125  -``0.045``7``   1.84  `\
+`#> `` 3`` 10:33955430_C_T   0.006``10`` -``0.195`` 0.041``9``  1.85 0.442  0.458   0.007``21`` -``0.137`` `\
+`#> `` 4`` 10:99772885_A_G  -``0.019``5``  -``1.48``  0.027``7``  1.89 0.241  0.218  -``0.020``1``  -``1.32``  `\
+`#> `` 5`` 11:130795698_G_T -``0.011``0``   2.17  0.031``5``  1.78 0.363  0.111  -``0.009``74``  2.12  `\
+`#> `` 6`` 11:13315205_C_T   0.001``68``  0.283 0.022``7``  1.63 0.471  0.431   0.003``83``  0.425 `\
+`#> `` 7`` 11:2858440_A_G   -``0.084``8``   1.42  0.119   3.07 0.238  0.322  -``0.046``1``  -``0.087``6`\
+`#> `` 8`` 11:43648368_G_T   0.016``4``   1.53  0.030``2``  1.56 0.293  0.163   0.016``3``   0.969 `\
+`#> `` 9`` 11:65640906_C_T   0.015``7``  -``1.70``  0.030``7``  1.80 0.304  0.172   0.012``1``  -``1.09``  `\
+`#> ``10`` 12:103658096_A_G  0.063``9``  -``2.25``  0.046``6``  2.23 0.085``0`` 0.157   0.055``4``  -``1.85``  `\
+`#> ``# ℹ 55 more rows`
 
 This is the distribution of the estimate of the pleiotropic effect of
 each SNP that showed heterogeneity
@@ -783,29 +769,23 @@ each SNP that showed heterogeneity
 
 ![](tutorial_files/figure-html/unnamed-chunk-35-1.png)
 
-Any evidence of SNPs with substantial heterogeneity?
+Any SNPs with evidence of a pleiotropic effect?
 
 \
 `x``$``mrgxe_res`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` ``dplyr``::`[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(`[`p.adjust`](https://rdrr.io/r/stats/p.adjust.html)`(``a_pval``, ``"fdr"``)`` ``<`` ``0.05``)`\
-`#> ``# A tibble: 7 × 9`\
-`#> ``# Groups:   SNP [7]`\
-`#>   SNP                    a       b   a_se  b_se  a_pval b_pval  a_mean  b_mean`\
-`#>   ``<chr>``              ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``   ``<dbl>``  ``<dbl>``   ``<dbl>``   ``<dbl>`\
-`#> ``1`` 10:118650996_C_T  0.045``0``  2.14   0.024``9``  1.65 0.035``3``  0.097``6``  0.045``2``  1.93  `\
-`#> ``2`` 13:58259492_A_C  -``0.080``4`` -``4.47``   0.043``7``  3.31 0.032``9``  0.088``5`` -``0.076``2`` -``2.88``  `\
-`#> ``3`` 16:19925612_C_T   0.070``5``  1.74   0.042``5``  2.11 0.048``5``  0.205   0.063``2``  1.29  `\
-`#> ``4`` 16:76895693_A_G   0.056``7``  2.19   0.026``6``  3.06 0.016``7``  0.237   0.049``4``  1.91  `\
-`#> ``5`` 19:33953354_G_T  -``0.068``1`` -``0.086``9`` 0.023``9``  1.69 0.002``24`` 0.479  -``0.062``1`` -``0.023``6`\
-`#> ``6`` 2:161265910_C_T  -``0.032``3`` -``0.701``  0.019``4``  2.13 0.048``2``  0.371  -``0.028``2`` -``0.318`` `\
-`#> ``7`` 3:62354425_A_G    0.038``5``  0.285  0.023``3``  1.62 0.049``0``  0.430   0.035``1`` -``0.065``5`
+`#> ``# A tibble: 0 × 9`\
+`#> ``# ℹ 9 variables: SNP <chr>, a <dbl>, b <dbl>, a_se <dbl>, b_se <dbl>,`\
+`#> ``#   a_pval <dbl>, b_pval <dbl>, a_mean <dbl>, b_mean <dbl>`
 
-It’s worth always checking if these look credible e.g. this plots the
-SNP-exposure against SNP-outcome associations for the identified SNPs.
-You’d expect to see a slope reflecting the causal effect estimate with
-the intercept reflecting the pleiotropic association.
+In this example none of the pleiotropy estimates pass FDR \< 0.05. It’s
+worth always checking if any SNPs look credible e.g. this plots the
+SNP-exposure against SNP-outcome associations for the SNPs with nominal
+p \< 0.05 (by default `mrgxe_plot_variant()` plots the SNPs with FDR \<
+0.05). You’d expect to see a slope reflecting the causal effect estimate
+with the intercept reflecting the pleiotropic association.
 
 \
-`x``$``mrgxe_plot_variant``(``)`
+`x``$``mrgxe_plot_variant``(`[`subset`](https://rdrr.io/r/base/subset.html)`(``x``$``mrgxe_res``, ``a_pval`` ``<`` ``0.05``)``$``SNP``)`
 
 ![](tutorial_files/figure-html/unnamed-chunk-37-1.png)
 

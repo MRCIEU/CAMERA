@@ -11,6 +11,12 @@
   had their `beta` and `eaf` wrongly flipped, and palindromic SNPs with
   intermediate allele frequencies were dropped. `extract_instruments()`
   gains a `harmonise_strictness` argument.
+- Fix the FDR adjustment in
+  `estimate_instrument_heterogeneity_per_variant()` and
+  `mrgxe_plot_variant()`. It was applied separately to each SNP, so
+  `Qfdr` equalled `Qpval` and the default SNP selections in `mrgxe()`
+  and `mrgxe_plot_variant()` used unadjusted p-values. `mrgxe()` now
+  returns an ungrouped tibble.
 - Bump the required version of ieugwasr
 
 ## CAMeRa 0.1.3

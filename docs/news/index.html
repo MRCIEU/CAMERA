@@ -39,6 +39,7 @@
 <h2 class="pkg-version" data-toc-text="0.1.4" id="camera-014">CAMeRa 0.1.4<a class="anchor" aria-label="anchor" href="#camera-014"></a></h2>
 <ul><li>
 <code>extract_instruments()</code> and <code>check_phenotypes()</code> now harmonise with TwoSampleMR <code>action = 1</code>, assuming all alleles are on the forward strand as they are in OpenGWAS. Previously the default <code>action = 2</code> inferred the strand of palindromic SNPs from their allele frequencies, which differ between populations, so palindromic SNPs whose allele frequencies were on different sides of 0.5 in the reference population had their <code>beta</code> and <code>eaf</code> wrongly flipped, and palindromic SNPs with intermediate allele frequencies were dropped. <code>extract_instruments()</code> gains a <code>harmonise_strictness</code> argument.</li>
+<li>Fix the FDR adjustment in <code>estimate_instrument_heterogeneity_per_variant()</code> and <code>mrgxe_plot_variant()</code>. It was applied separately to each SNP, so <code>Qfdr</code> equalled <code>Qpval</code> and the default SNP selections in <code>mrgxe()</code> and <code>mrgxe_plot_variant()</code> used unadjusted p-values. <code>mrgxe()</code> now returns an ungrouped tibble.</li>
 <li>Bump the required version of ieugwasr</li>
 </ul></div>
     <div class="section level2">

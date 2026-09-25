@@ -1230,9 +1230,9 @@ across populations for selected variants
 #### Usage
 
     CAMERA$mrgxe_plot_variant(
-      variant = self$mrgxe_res %>% dplyr::filter(p.adjust(a_pval, "fdr") < 0.05) %>% {
-
-          .$SNP
+      variant = self$mrgxe_res %>% dplyr::ungroup() %>% dplyr::filter(p.adjust(a_pval,
+        "fdr") < 0.05) %>% {
+         .$SNP
      },
       dat = self$harmonised_dat
     )
