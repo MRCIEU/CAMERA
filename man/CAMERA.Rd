@@ -444,13 +444,18 @@ Per variant results are stored in \code{x$instrument_specificity}, including the
   This function searches for GWAS significant SNPs (P < 5E-8) for a specified set of the exposures. This method is equivalant to the instrumnet extraction method for Multivariable MR. Reference here: https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.html.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{CAMERA$extract_instruments(exposure_ids = self$exposure_ids, ...)}
+    \preformatted{CAMERA$extract_instruments(
+  exposure_ids = self$exposure_ids,
+  harmonise_strictness = 1,
+  ...
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{exposure_ids}}{ID for the exposure. Default is x$exposure_ids.}
+      \item{\code{harmonise_strictness}}{Passed to \code{TwoSampleMR::mv_extract_exposures()}. Default is 1, which assumes all alleles are on the forward strand, as they are in OpenGWAS. The TwoSampleMR default of 2 infers the strand of palindromic SNPs from their allele frequencies, which wrongly flips palindromic SNPs whose allele frequencies are on different sides of 0.5 in different populations, and drops palindromic SNPs with intermediate allele frequencies.}
       \item{\code{...}}{Further arguments passed to \code{TwoSampleMR::mv_extract_exposures()}}
     }
     \if{html}{\out{</div>}}

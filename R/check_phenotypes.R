@@ -19,7 +19,8 @@ CAMERA$set("public", "check_phenotypes", function(ids = self$exposure_ids) {
             message("None of the instruments for ", i, " were found in ", j, "; skipping")
             return(NULL)
           }
-          suppressMessages(d <- TwoSampleMR::harmonise_data(exp, out))
+          # OpenGWAS alleles are on the forward strand, so don't infer the strand of palindromic SNPs from allele frequencies, which differ between populations
+          suppressMessages(d <- TwoSampleMR::harmonise_data(exp, out, action = 1))
 
           res <- suppressMessages(TwoSampleMR::mr(d, method = "mr_ivw")) %>%
             {

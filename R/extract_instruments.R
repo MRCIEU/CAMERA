@@ -14,10 +14,11 @@ generate_vid <- function(d, ea = "ea", nea = "nea", eaf = "eaf", beta = "beta", 
 #' @description
 #'  This function searches for GWAS significant SNPs (P < 5E-8) for a specified set of the exposures. This method is equivalant to the instrumnet extraction method for Multivariable MR. Reference here: https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.html.
 #' @param exposure_ids ID for the exposure. Default is x$exposure_ids.
+#' @param harmonise_strictness Passed to `TwoSampleMR::mv_extract_exposures()`. Default is 1, which assumes all alleles are on the forward strand, as they are in OpenGWAS. The TwoSampleMR default of 2 infers the strand of palindromic SNPs from their allele frequencies, which wrongly flips palindromic SNPs whose allele frequencies are on different sides of 0.5 in different populations, and drops palindromic SNPs with intermediate allele frequencies.
 #' @param ... Further arguments passed to `TwoSampleMR::mv_extract_exposures()`
 #' @return Data frame in x$instrument_raw
-CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposure_ids, ...) {
-  suppressMessages(instrument_raw <- TwoSampleMR::mv_extract_exposures(exposure_ids, ...))
+CAMERA$set("public", "extract_instruments", function(exposure_ids = self$exposure_ids, harmonise_strictness = 1, ...) {
+  suppressMessages(instrument_raw <- TwoSampleMR::mv_extract_exposures(exposure_ids, harmonise_strictness = harmonise_strictness, ...))
   # Add chromosome and position
   suppressMessages(instrument_raw <- TwoSampleMR::add_metadata(instrument_raw, cols = c("sample_size", "ncase", "ncontrol", "unit", "sd")))
   variants <- suppressMessages(ieugwasr::variants_rsid(unique(instrument_raw$SNP)))
