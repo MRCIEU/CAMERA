@@ -1,6 +1,6 @@
 Package: CAMeRa
 Title: CAMeRa (Cross Ancestral Mendelian Randomisation)
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: c(
     person("Yoonsu", "Cho", , "yoonsu.cho@bristol.ac.uk", role = "aut"),
     person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = c("aut", "cre"),
@@ -21,7 +21,7 @@ Depends:
 Imports:
     dplyr,
     ggplot2 (>= 3.3.0),
-    ieugwasr (>= 1.1.0),
+    ieugwasr (>= 1.2.0),
     magrittr,
     tidyr
 Suggests: 
@@ -43,6 +43,7 @@ VignetteBuilder:
 Remotes:
     amandaforde/winnerscurse,
     MRCIEU/genetics.binaRies,
+    MRCIEU/ieugwasr,
     MRCIEU/TwoSampleMR,
     WSpiller/RadialMR
 Config/roxygen2/markdown: TRUE
