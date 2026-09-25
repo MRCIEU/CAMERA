@@ -747,13 +747,28 @@ https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.html.
 
 #### Usage
 
-    CAMERA$extract_instruments(exposure_ids = self$exposure_ids, ...)
+    CAMERA$extract_instruments(
+      exposure_ids = self$exposure_ids,
+      harmonise_strictness = 1,
+      ...
+    )
 
 #### Arguments
 
 - `exposure_ids`:
 
   ID for the exposure. Default is x\$exposure_ids.
+
+- `harmonise_strictness`:
+
+  Passed to
+  [`TwoSampleMR::mv_extract_exposures()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.html).
+  Default is 1, which assumes all alleles are on the forward strand, as
+  they are in OpenGWAS. The TwoSampleMR default of 2 infers the strand
+  of palindromic SNPs from their allele frequencies, which wrongly flips
+  palindromic SNPs whose allele frequencies are on different sides of
+  0.5 in different populations, and drops palindromic SNPs with
+  intermediate allele frequencies.
 
 - `...`:
 

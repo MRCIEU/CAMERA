@@ -95,7 +95,7 @@ or set `plink` to the path of your own plink executable.
 `  ``)``, `\
 `  pops ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"SAS"``, ``"AFR"``, ``"EUR"``, ``"EAS"``)``,`\
 `  bfiles``=`[`file.path`](https://rdrr.io/r/base/file.path.html)`(``bfile_dir``, `[`c`](https://rdrr.io/r/base/c.html)`(``"SAS"``, ``"AFR"``, ``"EUR"``, ``"EAS"``)``)``,`\
-`  plink ``=`` ``genetics.binaRies``::`[`get_plink_binary`](https://rdrr.io/pkg/genetics.binaRies/man/get_plink_binary.html)`(``)``,        `\
+`  plink ``=`` ``genetics.binaRies``::``get_plink_binary``(``)``,        `\
 `  radius``=``50000``, `\
 `  clump_pop``=``"EUR"`\
 `)`\
@@ -158,7 +158,7 @@ A data frame of the extracted instruments is stored in
 
 \
 [`str`](https://rdrr.io/r/utils/str.html)`(``x``$``instrument_raw``)`\
-`#> 'data.frame':    1420 obs. of  14 variables:`\
+`#> 'data.frame':    1528 obs. of  14 variables:`\
 `#>  $ rsid      : chr  "1:2723214_A_C" "1:6657424_A_C" "1:11207269_C_T" "1:19934900_A_G" ...`\
 `#>  $ chr       : chr  "1" "1" "1" "1" ...`\
 `#>  $ position  : int  2723214 6657424 11207269 19934900 23313353 33784146 39564930 47678458 49996959 66434743 ...`\
@@ -186,14 +186,14 @@ the instruments between and calculates fraction of the instruments
 \
 `x``$``instrument_heterogeneity``(``)`\
 `#> ``# A tibble: 6 × 9`\
-`#>   Reference  Replication  nsnp agreement     se      pval     I2     Q    Q_pval`\
-`#>   ``<chr>``      ``<chr>``       ``<int>``     ``<dbl>``  ``<dbl>``     ``<dbl>``  ``<dbl>`` ``<dbl>``     ``<dbl>`\
-`#> ``1`` ukb-b-199… ukb-e-2310…   346     0.700 0.050``1`` 2.85``e``- 44`` 0.046``9`` 363.  2.42``e``-  1`\
-`#> ``2`` ukb-b-199… ukb-e-2100…   346     0.454 0.071``9`` 2.66``e``- 10`` 0.124  395.  3.23``e``-  2`\
-`#> ``3`` ukb-b-199… bbj-a-1       346     0.584 0.021``4`` 3.04``e``-164`` 0.619  909.  2.75``e``- 52`\
-`#> ``4`` bbj-a-1    ukb-e-2310…    44     0.773 0.097``4`` 2.04``e``- 15`` 0.202   55.2 1.01``e``-  1`\
-`#> ``5`` bbj-a-1    ukb-e-2100…    44     0.514 0.145  4.06``e``-  4`` 0.328   65.5 1.51``e``-  2`\
-`#> ``6`` bbj-a-1    ukb-b-19953    44     0.831 0.055``4`` 6.14``e``- 51`` 0.952  909.  1.05``e``-162`
+`#>   Reference Replication  nsnp agreement     se      pval     I2      Q    Q_pval`\
+`#>   ``<chr>``     ``<chr>``       ``<int>``     ``<dbl>``  ``<dbl>``     ``<dbl>``  ``<dbl>``  ``<dbl>``     ``<dbl>`\
+`#> ``1`` ukb-b-19… ukb-e-2310…   373     0.676 0.047``8`` 2.78``e``- 45`` 0.031``5``  385.  3.09``e``-  1`\
+`#> ``2`` ukb-b-19… ukb-e-2100…   373     0.476 0.068``3`` 3.35``e``- 12`` 0.103   416.  5.85``e``-  2`\
+`#> ``3`` ukb-b-19… bbj-a-1       373     0.578 0.021``0`` 3.97``e``-166`` 0.635  ``1``022.  5.75``e``- 62`\
+`#> ``4`` bbj-a-1   ukb-e-2310…    46     0.761 0.093``2`` 3.15``e``- 16`` 0.176    55.8 1.29``e``-  1`\
+`#> ``5`` bbj-a-1   ukb-e-2100…    46     0.518 0.144  3.31``e``-  4`` 0.354    71.2 7.69``e``-  3`\
+`#> ``6`` bbj-a-1   ukb-b-19953    46     0.843 0.054``4`` 5.12``e``- 54`` 0.953   975.  5.68``e``-175`
 
 \
 `x``$``estimate_instrument_specificity``(``instrument``=``x``$``instrument_raw``)`\
@@ -210,7 +210,7 @@ the instruments between and calculates fraction of the instruments
 `#> Checking bbj-a-1 against ukb-e-21001_AFR`\
 `#> Checking bbj-a-1 against ukb-b-19953`\
 `#>          discovery     replication nsnp  metric    datum       value`\
-`#> 1  ukb-e-21001_AFR ukb-e-23104_CSA    1 P-value Expected   0.9988422`\
+`#> 1  ukb-e-21001_AFR ukb-e-23104_CSA    1 P-value Expected   0.9987758`\
 `#> 2  ukb-e-21001_AFR ukb-e-23104_CSA    1 P-value Observed   1.0000000`\
 `#> 3  ukb-e-21001_AFR ukb-e-23104_CSA    1    Sign Expected   0.9999995`\
 `#> 4  ukb-e-21001_AFR ukb-e-23104_CSA    1    Sign Observed   1.0000000`\
@@ -222,30 +222,30 @@ the instruments between and calculates fraction of the instruments
 `#> 10 ukb-e-21001_AFR         bbj-a-1    1 P-value Observed   1.0000000`\
 `#> 11 ukb-e-21001_AFR         bbj-a-1    1    Sign Expected   0.9999995`\
 `#> 12 ukb-e-21001_AFR         bbj-a-1    1    Sign Observed   1.0000000`\
-`#> 13     ukb-b-19953 ukb-e-23104_CSA  346 P-value Expected   1.7253577`\
-`#> 14     ukb-b-19953 ukb-e-23104_CSA  346 P-value Observed   2.0000000`\
-`#> 15     ukb-b-19953 ukb-e-23104_CSA  346    Sign Expected 288.5418273`\
-`#> 16     ukb-b-19953 ukb-e-23104_CSA  346    Sign Observed 252.0000000`\
-`#> 17     ukb-b-19953 ukb-e-21001_AFR  346 P-value Expected   0.4155789`\
-`#> 18     ukb-b-19953 ukb-e-21001_AFR  346 P-value Observed   1.0000000`\
-`#> 19     ukb-b-19953 ukb-e-21001_AFR  346    Sign Expected 260.3556789`\
-`#> 20     ukb-b-19953 ukb-e-21001_AFR  346    Sign Observed 211.0000000`\
-`#> 21     ukb-b-19953         bbj-a-1  346 P-value Expected 119.3614479`\
-`#> 22     ukb-b-19953         bbj-a-1  346 P-value Observed  40.0000000`\
-`#> 23     ukb-b-19953         bbj-a-1  346    Sign Expected 341.3865108`\
-`#> 24     ukb-b-19953         bbj-a-1  346    Sign Observed 307.0000000`\
-`#> 25         bbj-a-1 ukb-e-23104_CSA   44 P-value Expected   1.4318881`\
-`#> 26         bbj-a-1 ukb-e-23104_CSA   44 P-value Observed   2.0000000`\
-`#> 27         bbj-a-1 ukb-e-23104_CSA   44    Sign Expected  40.1928440`\
-`#> 28         bbj-a-1 ukb-e-23104_CSA   44    Sign Observed  38.0000000`\
-`#> 29         bbj-a-1 ukb-e-21001_AFR   44 P-value Expected   0.2552391`\
-`#> 30         bbj-a-1 ukb-e-21001_AFR   44 P-value Observed   1.0000000`\
-`#> 31         bbj-a-1 ukb-e-21001_AFR   44    Sign Expected  37.0142987`\
-`#> 32         bbj-a-1 ukb-e-21001_AFR   44    Sign Observed  28.0000000`\
-`#> 33         bbj-a-1     ukb-b-19953   44 P-value Expected  43.3474555`\
-`#> 34         bbj-a-1     ukb-b-19953   44 P-value Observed  36.0000000`\
-`#> 35         bbj-a-1     ukb-b-19953   44    Sign Expected  43.9998642`\
-`#> 36         bbj-a-1     ukb-b-19953   44    Sign Observed  43.0000000`\
+`#> 13     ukb-b-19953 ukb-e-23104_CSA  373 P-value Expected   1.7599653`\
+`#> 14     ukb-b-19953 ukb-e-23104_CSA  373 P-value Observed   2.0000000`\
+`#> 15     ukb-b-19953 ukb-e-23104_CSA  373    Sign Expected 311.1377768`\
+`#> 16     ukb-b-19953 ukb-e-23104_CSA  373    Sign Observed 270.0000000`\
+`#> 17     ukb-b-19953 ukb-e-21001_AFR  373 P-value Expected   0.4125545`\
+`#> 18     ukb-b-19953 ukb-e-21001_AFR  373 P-value Observed   1.0000000`\
+`#> 19     ukb-b-19953 ukb-e-21001_AFR  373    Sign Expected 281.1770175`\
+`#> 20     ukb-b-19953 ukb-e-21001_AFR  373    Sign Observed 232.0000000`\
+`#> 21     ukb-b-19953         bbj-a-1  373 P-value Expected 127.0276153`\
+`#> 22     ukb-b-19953         bbj-a-1  373 P-value Observed  41.0000000`\
+`#> 23     ukb-b-19953         bbj-a-1  373    Sign Expected 368.2446361`\
+`#> 24     ukb-b-19953         bbj-a-1  373    Sign Observed 327.0000000`\
+`#> 25         bbj-a-1 ukb-e-23104_CSA   46 P-value Expected   1.4318562`\
+`#> 26         bbj-a-1 ukb-e-23104_CSA   46 P-value Observed   2.0000000`\
+`#> 27         bbj-a-1 ukb-e-23104_CSA   46    Sign Expected  42.1873456`\
+`#> 28         bbj-a-1 ukb-e-23104_CSA   46    Sign Observed  40.0000000`\
+`#> 29         bbj-a-1 ukb-e-21001_AFR   46 P-value Expected   0.2499113`\
+`#> 30         bbj-a-1 ukb-e-21001_AFR   46 P-value Observed   1.0000000`\
+`#> 31         bbj-a-1 ukb-e-21001_AFR   46    Sign Expected  38.9215168`\
+`#> 32         bbj-a-1 ukb-e-21001_AFR   46    Sign Observed  29.0000000`\
+`#> 33         bbj-a-1     ukb-b-19953   46 P-value Expected  45.3411632`\
+`#> 34         bbj-a-1     ukb-b-19953   46 P-value Observed  38.0000000`\
+`#> 35         bbj-a-1     ukb-b-19953   46    Sign Expected  45.9998778`\
+`#> 36         bbj-a-1     ukb-b-19953   46    Sign Observed  45.0000000`\
 `#>           pdiff`\
 `#> 1  1.000000e+00`\
 `#> 2  1.000000e+00`\
@@ -259,30 +259,30 @@ the instruments between and calculates fraction of the instruments
 `#> 10 1.000000e+00`\
 `#> 11 1.000000e+00`\
 `#> 12 1.000000e+00`\
-`#> 13 6.924878e-01`\
-`#> 14 6.924878e-01`\
-`#> 15 7.317413e-07`\
-`#> 16 7.317413e-07`\
-`#> 17 3.402067e-01`\
-`#> 18 3.402067e-01`\
-`#> 19 4.942338e-09`\
-`#> 20 4.942338e-09`\
-`#> 21 1.945394e-22`\
-`#> 22 1.945394e-22`\
-`#> 23 7.561092e-24`\
-`#> 24 7.561092e-24`\
-`#> 25 6.547985e-01`\
-`#> 26 6.547985e-01`\
-`#> 27 2.736137e-01`\
-`#> 28 2.736137e-01`\
-`#> 29 2.258443e-01`\
-`#> 30 2.258443e-01`\
-`#> 31 1.263407e-03`\
-`#> 32 1.263407e-03`\
-`#> 33 2.576034e-07`\
-`#> 34 2.576034e-07`\
-`#> 35 1.357890e-04`\
-`#> 36 1.357890e-04`
+`#> 13 6.970256e-01`\
+`#> 14 6.970256e-01`\
+`#> 15 9.115926e-08`\
+`#> 16 9.115926e-08`\
+`#> 17 3.381940e-01`\
+`#> 18 3.381940e-01`\
+`#> 19 1.735794e-08`\
+`#> 20 1.735794e-08`\
+`#> 21 1.063832e-24`\
+`#> 22 1.063832e-24`\
+`#> 23 2.350641e-30`\
+`#> 24 2.350641e-30`\
+`#> 25 6.549345e-01`\
+`#> 26 6.549345e-01`\
+`#> 27 2.748258e-01`\
+`#> 28 2.748258e-01`\
+`#> 29 2.216606e-01`\
+`#> 30 2.216606e-01`\
+`#> 31 2.921155e-04`\
+`#> 32 2.921155e-04`\
+`#> 33 2.843716e-07`\
+`#> 34 2.843716e-07`\
+`#> 35 1.221987e-04`\
+`#> 36 1.221987e-04`
 
 ## Extract outcome data
 
@@ -300,19 +300,19 @@ the instruments between and calculates fraction of the instruments
 `#> ``2`` AFR   ukb-e-21001_AFR ukb-e-411_AFR OpenGWAS`\
 `#> ``3`` EUR   ukb-b-19953     ieu-a-7       OpenGWAS`\
 `#> ``4`` EAS   bbj-a-1         bbj-a-109     OpenGWAS`\
-`#> 'data.frame':    1420 obs. of  4 variables:`\
+`#> 'data.frame':    1528 obs. of  4 variables:`\
 `#>  $ SNP : chr  "1:2723214_A_C" "1:6657424_A_C" "1:11207269_C_T" "1:19934900_A_G" ...`\
 `#>  $ pops: chr  "SAS" "SAS" "SAS" "SAS" ...`\
 `#>  $ beta: num  -0.0266 -0.0235 0.0171 -0.0148 -0.0169 ...`\
 `#>  $ se  : num  0.0154 0.0154 0.0192 0.0169 0.0146 ...`\
 `#> NULL`\
-`#> 'data.frame':    2365 obs. of  4 variables:`\
+`#> 'data.frame':    2911 obs. of  4 variables:`\
 `#>  $ SNP : chr  "1:11207269_C_T" "1:11207269_C_T" "1:11207269_C_T" "1:11207269_C_T" ...`\
 `#>  $ pops: chr  "EAS" "EUR" "AFR" "SAS" ...`\
-`#>  $ beta: num  0.0234 -0.00328 -0.09457 -0.06663 0.02586 ...`\
-`#>  $ se  : num  0.0319 0.0112 0.0809 0.0594 0.0221 ...`\
+`#>  $ beta: num  0.023401 -0.003275 -0.09457 -0.06663 0.000183 ...`\
+`#>  $ se  : num  0.0319 0.0112 0.0809 0.0594 0.016 ...`\
 `#> NULL`\
-`#> 'data.frame':    1400 obs. of  6 variables:`\
+`#> 'data.frame':    1507 obs. of  6 variables:`\
 `#>  $ SNP   : chr  "1:2723214_A_C" "1:6657424_A_C" "1:11207269_C_T" "1:19934900_A_G" ...`\
 `#>  $ pops  : chr  "SAS" "SAS" "SAS" "SAS" ...`\
 `#>  $ beta.x: num  -0.0266 -0.0235 0.0171 -0.0148 -0.0169 ...`\
@@ -336,11 +336,11 @@ combined information.
 `#> ``# A tibble: 5 × 8`\
 `` #>   pops  Estimate `Std. Error` `t value` `Pr(>|t|)`    Qj Qjpval   Qdf ``\
 `#>   ``<chr>``    ``<dbl>``        ``<dbl>``     ``<dbl>``      ``<dbl>`` ``<dbl>``  ``<dbl>`` ``<dbl>`\
-`#> ``1`` All      0.445       0.029``9``     14.9    1.55``e``-46`` 6.58  0.086``6``     3`\
-`#> ``2`` AFR      0.339       0.219       1.55   1.21``e``- 1`` 0.233 0.630      1`\
-`#> ``3`` EAS      0.615       0.076``1``      8.08   1.35``e``-15`` 4.99  0.025``5``     1`\
-`#> ``4`` EUR      0.422       0.033``8``     12.5    7.54``e``-34`` 0.474 0.491      1`\
-`#> ``5`` SAS      0.316       0.137       2.30   2.15``e``- 2`` 0.881 0.348      1`
+`#> ``1`` All      0.443       0.029``2``    15.2     1.27``e``-48`` 8.02  0.045``6``     3`\
+`#> ``2`` AFR      0.131       0.214      0.613   5.40``e``- 1`` 2.12  0.145      1`\
+`#> ``3`` EAS      0.611       0.074``5``     8.20    4.97``e``-16`` 5.09  0.024``1``     1`\
+`#> ``4`` EUR      0.423       0.032``9``    12.9     5.81``e``-36`` 0.374 0.541      1`\
+`#> ``5`` SAS      0.353       0.136      2.59    9.57``e``- 3`` 0.441 0.506      1`
 
 In this example the estimates are broadly consistent across ancestries,
 although the EAS estimate is somewhat larger than the others (see the
@@ -375,20 +375,20 @@ the original SNP and show the largest effect size magnitude.
 
 \
 `x``$``fema_regional_instruments``(``)`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` `[`str`](https://rdrr.io/r/utils/str.html)`(``)`\
-`#> tibble [1,416 × 13] (S3: tbl_df/tbl/data.frame)`\
-`#>  $ id      : chr [1:1416] "ukb-e-23104_CSA" "ukb-e-21001_AFR" "ukb-b-19953" "bbj-a-1" ...`\
-`#>  $ trait   : chr [1:1416] "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index" ...`\
-`#>  $ chr     : chr [1:1416] "1" "1" "1" "1" ...`\
-`#>  $ position: int [1:1416] 2722848 2722848 2722848 2722848 6694927 6694927 6694927 6694927 11236410 11236410 ...`\
-`#>  $ rsid    : chr [1:1416] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
-`#>  $ ea      : chr [1:1416] "C" "C" "C" "C" ...`\
-`#>  $ nea     : chr [1:1416] "T" "T" "T" "T" ...`\
-`#>  $ eaf     : num [1:1416] 0.715 0.859 0.534 0.565 0.714 ...`\
-`#>  $ beta    : num [1:1416] 0.0174 -0.0312 0.0144 0.012 0.0258 ...`\
-`#>  $ se      : num [1:1416] 0.01609 0.02562 0.00199 0.00422 0.01579 ...`\
-`#>  $ p       : num [1:1416] 2.80e-01 2.24e-01 5.10e-13 4.33e-03 1.02e-01 ...`\
-`#>  $ n       : num [1:1416] NA NA 461460 NA NA ...`\
-`#>  $ rsido   : chr [1:1416] "rs6692145" "rs6692145" "rs6692145" "rs6692145" ...`
+`#> tibble [1,524 × 13] (S3: tbl_df/tbl/data.frame)`\
+`#>  $ id      : chr [1:1524] "ukb-e-23104_CSA" "ukb-e-21001_AFR" "ukb-b-19953" "bbj-a-1" ...`\
+`#>  $ trait   : chr [1:1524] "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index" ...`\
+`#>  $ chr     : chr [1:1524] "1" "1" "1" "1" ...`\
+`#>  $ position: int [1:1524] 2722848 2722848 2722848 2722848 6694927 6694927 6694927 6694927 11236410 11236410 ...`\
+`#>  $ rsid    : chr [1:1524] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
+`#>  $ ea      : chr [1:1524] "C" "C" "C" "C" ...`\
+`#>  $ nea     : chr [1:1524] "T" "T" "T" "T" ...`\
+`#>  $ eaf     : num [1:1524] 0.715 0.859 0.534 0.565 0.714 ...`\
+`#>  $ beta    : num [1:1524] 0.0174 -0.0312 0.0144 0.012 0.0258 ...`\
+`#>  $ se      : num [1:1524] 0.01609 0.02562 0.00199 0.00422 0.01579 ...`\
+`#>  $ p       : num [1:1524] 2.80e-01 2.24e-01 5.10e-13 4.33e-03 1.02e-01 ...`\
+`#>  $ n       : num [1:1524] NA NA 461460 NA NA ...`\
+`#>  $ rsido   : chr [1:1524] "rs6692145" "rs6692145" "rs6692145" "rs6692145" ...`
 
 Alternatively, use a Z-score based meta analysis if you are unsure about
 whether the effect size scales are sufficiently consistent across the
@@ -396,20 +396,20 @@ studies:
 
 \
 `x``$``fema_regional_instruments``(``method``=``"zma"``)`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` `[`str`](https://rdrr.io/r/utils/str.html)`(``)`\
-`#> tibble [1,416 × 13] (S3: tbl_df/tbl/data.frame)`\
-`#>  $ id      : chr [1:1416] "ukb-e-23104_CSA" "ukb-e-21001_AFR" "ukb-b-19953" "bbj-a-1" ...`\
-`#>  $ trait   : chr [1:1416] "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index" ...`\
-`#>  $ chr     : chr [1:1416] "1" "1" "1" "1" ...`\
-`#>  $ position: int [1:1416] 2722848 2722848 2722848 2722848 6684906 6684906 6684906 6684906 11236410 11236410 ...`\
-`#>  $ rsid    : chr [1:1416] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
-`#>  $ ea      : chr [1:1416] "C" "C" "C" "C" ...`\
-`#>  $ nea     : chr [1:1416] "T" "T" "T" "T" ...`\
-`#>  $ eaf     : num [1:1416] 0.715 0.859 0.534 0.565 0.702 ...`\
-`#>  $ beta    : num [1:1416] 0.0174 -0.0312 0.0144 0.012 0.027 ...`\
-`#>  $ se      : num [1:1416] 0.01609 0.02562 0.00199 0.00422 0.01562 ...`\
-`#>  $ p       : num [1:1416] 2.80e-01 2.24e-01 5.10e-13 4.33e-03 8.35e-02 ...`\
-`#>  $ n       : num [1:1416] NA NA 461460 NA NA ...`\
-`#>  $ rsido   : chr [1:1416] "rs6692145" "rs6692145" "rs6692145" "rs6692145" ...`
+`#> tibble [1,524 × 13] (S3: tbl_df/tbl/data.frame)`\
+`#>  $ id      : chr [1:1524] "ukb-e-23104_CSA" "ukb-e-21001_AFR" "ukb-b-19953" "bbj-a-1" ...`\
+`#>  $ trait   : chr [1:1524] "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index (BMI)" "Body mass index" ...`\
+`#>  $ chr     : chr [1:1524] "1" "1" "1" "1" ...`\
+`#>  $ position: int [1:1524] 2722848 2722848 2722848 2722848 6684906 6684906 6684906 6684906 11236410 11236410 ...`\
+`#>  $ rsid    : chr [1:1524] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
+`#>  $ ea      : chr [1:1524] "C" "C" "C" "C" ...`\
+`#>  $ nea     : chr [1:1524] "T" "T" "T" "T" ...`\
+`#>  $ eaf     : num [1:1524] 0.715 0.859 0.534 0.565 0.702 ...`\
+`#>  $ beta    : num [1:1524] 0.0174 -0.0312 0.0144 0.012 0.027 ...`\
+`#>  $ se      : num [1:1524] 0.01609 0.02562 0.00199 0.00422 0.01562 ...`\
+`#>  $ p       : num [1:1524] 2.80e-01 2.24e-01 5.10e-13 4.33e-03 8.35e-02 ...`\
+`#>  $ n       : num [1:1524] NA NA 461460 NA NA ...`\
+`#>  $ rsido   : chr [1:1524] "rs6692145" "rs6692145" "rs6692145" "rs6692145" ...`
 
 Example
 
@@ -450,25 +450,25 @@ Re-harmonise using the regional instruments. This replaces
 `#> ``2`` AFR   ukb-e-21001_AFR ukb-e-411_AFR OpenGWAS`\
 `#> ``3`` EUR   ukb-b-19953     ieu-a-7       OpenGWAS`\
 `#> ``4`` EAS   bbj-a-1         bbj-a-109     OpenGWAS`\
-`#> tibble [1,416 × 4] (S3: tbl_df/tbl/data.frame)`\
-`#>  $ SNP : chr [1:1416] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
-`#>  $ pops: chr [1:1416] "SAS" "AFR" "EUR" "EAS" ...`\
-`#>  $ beta: num [1:1416] 0.0174 -0.0312 0.0144 0.012 0.027 ...`\
-`#>  $ se  : num [1:1416] 0.01609 0.02562 0.00199 0.00422 0.01562 ...`\
+`#> tibble [1,524 × 4] (S3: tbl_df/tbl/data.frame)`\
+`#>  $ SNP : chr [1:1524] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
+`#>  $ pops: chr [1:1524] "SAS" "AFR" "EUR" "EAS" ...`\
+`#>  $ beta: num [1:1524] 0.0174 -0.0312 0.0144 0.012 0.027 ...`\
+`#>  $ se  : num [1:1524] 0.01609 0.02562 0.00199 0.00422 0.01562 ...`\
 `#> NULL`\
-`#> 'data.frame':    2365 obs. of  4 variables:`\
+`#> 'data.frame':    2911 obs. of  4 variables:`\
 `#>  $ SNP : chr  "1:11207269_C_T" "1:11207269_C_T" "1:11207269_C_T" "1:11207269_C_T" ...`\
 `#>  $ pops: chr  "EAS" "EUR" "AFR" "SAS" ...`\
-`#>  $ beta: num  0.0234 -0.00328 -0.09457 -0.06663 0.02586 ...`\
-`#>  $ se  : num  0.0319 0.0112 0.0809 0.0594 0.0221 ...`\
+`#>  $ beta: num  0.023401 -0.003275 -0.09457 -0.06663 0.000183 ...`\
+`#>  $ se  : num  0.0319 0.0112 0.0809 0.0594 0.016 ...`\
 `#> NULL`\
-`#> tibble [1,084 × 6] (S3: tbl_df/tbl/data.frame)`\
-`#>  $ SNP   : chr [1:1084] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
-`#>  $ pops  : chr [1:1084] "SAS" "AFR" "EUR" "EAS" ...`\
-`#>  $ beta.x: num [1:1084] 0.0174 -0.0312 0.0144 0.012 0.0157 ...`\
-`#>  $ se.x  : num [1:1084] 0.01609 0.02562 0.00199 0.00422 0.01678 ...`\
-`#>  $ beta.y: num [1:1084] -0.00619 -0.07145 0.00269 -0.01034 -0.02265 ...`\
-`#>  $ se.y  : num [1:1084] 0.05008 0.1119 0.00969 0.01632 0.05211 ...`\
+`#> tibble [1,517 × 6] (S3: tbl_df/tbl/data.frame)`\
+`#>  $ SNP   : chr [1:1517] "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" "1:2722848_C_T" ...`\
+`#>  $ pops  : chr [1:1517] "SAS" "AFR" "EUR" "EAS" ...`\
+`#>  $ beta.x: num [1:1517] 0.0174 -0.0312 0.0144 0.012 0.027 ...`\
+`#>  $ se.x  : num [1:1517] 0.01609 0.02562 0.00199 0.00422 0.01562 ...`\
+`#>  $ beta.y: num [1:1517] -0.00619 -0.07145 0.00269 -0.01034 0.05529 ...`\
+`#>  $ se.y  : num [1:1517] 0.05008 0.1119 0.00969 0.01632 0.04868 ...`\
 `#> NULL`
 
 Re-estimate the MR associations using the newly derived regional
@@ -479,11 +479,11 @@ instruments
 `#> ``# A tibble: 5 × 8`\
 `` #>   pops  Estimate `Std. Error` `t value` `Pr(>|t|)`     Qj Qjpval   Qdf ``\
 `#>   ``<chr>``    ``<dbl>``        ``<dbl>``     ``<dbl>``      ``<dbl>``  ``<dbl>``  ``<dbl>`` ``<dbl>`\
-`#> ``1`` All      0.457       0.033``1``     13.8    3.62``e``-40`` 1.96    0.581     3`\
-`#> ``2`` AFR      0.524       0.232       2.26   2.43``e``- 2`` 0.081``6``  0.775     1`\
-`#> ``3`` EAS      0.543       0.078``1``      6.95   6.48``e``-12`` 1.19    0.275     1`\
-`#> ``4`` EUR      0.442       0.038``1``     11.6    1.89``e``-29`` 0.162   0.687     1`\
-`#> ``5`` SAS      0.344       0.156       2.20   2.79``e``- 2`` 0.522   0.470     1`
+`#> ``1`` All      0.453       0.028``9``     15.7    1.48``e``-51`` 1.50    0.682     3`\
+`#> ``2`` AFR      0.372       0.192       1.93   5.33``e``- 2`` 0.179   0.672     1`\
+`#> ``3`` EAS      0.519       0.068``9``      7.53   8.42``e``-14`` 0.916   0.339     1`\
+`#> ``4`` EUR      0.445       0.033``2``     13.4    1.05``e``-38`` 0.058``4``  0.809     1`\
+`#> ``5`` SAS      0.375       0.133       2.81   5.00``e``- 3`` 0.347   0.556     1`
 
 In this example the estimates are more consistent across ancestries than
 with the raw instruments (compare the `Qjpval` values), although they
@@ -499,14 +499,15 @@ Evaluate instrument specificity. First using heterogeneity
 \
 `x``$``instrument_heterogeneity``(``x``$``instrument_fema``)`\
 `#> ``# A tibble: 6 × 9`\
-`#>   Reference Replication  nsnp agreement     se      pval      I2      Q   Q_pval`\
-`#>   ``<chr>``     ``<chr>``       ``<int>``     ``<dbl>``  ``<dbl>``     ``<dbl>``   ``<dbl>``  ``<dbl>``    ``<dbl>`\
-`#> ``1`` ukb-b-19… ukb-e-2310…   350     0.703 0.052``4`` 3.69``e``- 41`` 0.136    405.  2.02``e``- 2`\
-`#> ``2`` ukb-b-19… ukb-e-2100…   350     0.526 0.080``7`` 7.14``e``- 11`` 0.315    511.  3.42``e``- 8`\
-`#> ``3`` ukb-b-19… bbj-a-1       350     0.712 0.024``0`` 2.73``e``-193`` 0.694   ``1``146.  1.66``e``-85`\
-`#> ``4`` bbj-a-1   ukb-e-2310…    59     0.853 0.078``5`` 1.67``e``- 27`` 0.008``52``   59.5 4.21``e``- 1`\
-`#> ``5`` bbj-a-1   ukb-e-2100…    59     0.728 0.132  3.05``e``-  8`` 0.276     81.5 2.28``e``- 2`\
-`#> ``6`` bbj-a-1   ukb-b-19953    59     0.853 0.035``8`` 1.40``e``-125`` 0.906    625.  5.86``e``-96`
+`#>   Reference   Replication      nsnp agreement     se      pval      I2      Q`\
+`#>   ``<chr>``       ``<chr>``           ``<int>``     ``<dbl>``  ``<dbl>``     ``<dbl>``   ``<dbl>``  ``<dbl>`\
+`#> ``1`` ukb-b-19953 ukb-e-23104_CSA   377     0.683 0.050``2`` 3.92``e``- 42`` 0.129    433. `\
+`#> ``2`` ukb-b-19953 ukb-e-21001_AFR   377     0.526 0.077``4`` 1.02``e``- 11`` 0.302    540. `\
+`#> ``3`` ukb-b-19953 bbj-a-1           377     0.696 0.023``8`` 1.58``e``-188`` 0.710   ``1``301. `\
+`#> ``4`` bbj-a-1     ukb-e-23104_CSA    61     0.836 0.076``6`` 1.04``e``- 27`` 0.002``33``   61.1`\
+`#> ``5`` bbj-a-1     ukb-e-21001_AFR    61     0.747 0.128  5.42``e``-  9`` 0.261     82.5`\
+`#> ``6`` bbj-a-1     ukb-b-19953        61     0.866 0.035``4`` 7.68``e``-132`` 0.908    661. `\
+`#> ``# ℹ 1 more variable: Q_pval <dbl>`
 
 In this example, compared to above, the `agreement` regression slopes
 are closer to 1 for most pairs of ancestries.
@@ -526,7 +527,7 @@ are closer to 1 for most pairs of ancestries.
 `#> Checking bbj-a-1 against ukb-e-21001_AFR`\
 `#> Checking bbj-a-1 against ukb-b-19953`\
 `#>          discovery     replication nsnp  metric    datum       value`\
-`#> 1  ukb-e-21001_AFR ukb-e-23104_CSA    1 P-value Expected   0.9988447`\
+`#> 1  ukb-e-21001_AFR ukb-e-23104_CSA    1 P-value Expected   0.9987782`\
 `#> 2  ukb-e-21001_AFR ukb-e-23104_CSA    1 P-value Observed   1.0000000`\
 `#> 3  ukb-e-21001_AFR ukb-e-23104_CSA    1    Sign Expected   0.9999995`\
 `#> 4  ukb-e-21001_AFR ukb-e-23104_CSA    1    Sign Observed   1.0000000`\
@@ -538,30 +539,30 @@ are closer to 1 for most pairs of ancestries.
 `#> 10 ukb-e-21001_AFR         bbj-a-1    1 P-value Observed   1.0000000`\
 `#> 11 ukb-e-21001_AFR         bbj-a-1    1    Sign Expected   0.9999995`\
 `#> 12 ukb-e-21001_AFR         bbj-a-1    1    Sign Observed   1.0000000`\
-`#> 13     ukb-b-19953 ukb-e-23104_CSA  350 P-value Expected   1.7759047`\
-`#> 14     ukb-b-19953 ukb-e-23104_CSA  350 P-value Observed   2.0000000`\
-`#> 15     ukb-b-19953 ukb-e-23104_CSA  350    Sign Expected 292.1683281`\
-`#> 16     ukb-b-19953 ukb-e-23104_CSA  350    Sign Observed 253.0000000`\
-`#> 17     ukb-b-19953 ukb-e-21001_AFR  350 P-value Expected   0.3264757`\
-`#> 18     ukb-b-19953 ukb-e-21001_AFR  350 P-value Observed   1.0000000`\
-`#> 19     ukb-b-19953 ukb-e-21001_AFR  350    Sign Expected 265.1048831`\
-`#> 20     ukb-b-19953 ukb-e-21001_AFR  350    Sign Observed 207.0000000`\
-`#> 21     ukb-b-19953         bbj-a-1  350 P-value Expected 120.3217839`\
-`#> 22     ukb-b-19953         bbj-a-1  350 P-value Observed  56.0000000`\
-`#> 23     ukb-b-19953         bbj-a-1  350    Sign Expected 345.8530941`\
-`#> 24     ukb-b-19953         bbj-a-1  350    Sign Observed 311.0000000`\
-`#> 25         bbj-a-1 ukb-e-23104_CSA   59 P-value Expected   1.5855364`\
-`#> 26         bbj-a-1 ukb-e-23104_CSA   59 P-value Observed   2.0000000`\
-`#> 27         bbj-a-1 ukb-e-23104_CSA   59    Sign Expected  53.6327894`\
-`#> 28         bbj-a-1 ukb-e-23104_CSA   59    Sign Observed  49.0000000`\
-`#> 29         bbj-a-1 ukb-e-21001_AFR   59 P-value Expected   0.2285218`\
-`#> 30         bbj-a-1 ukb-e-21001_AFR   59 P-value Observed   1.0000000`\
-`#> 31         bbj-a-1 ukb-e-21001_AFR   59    Sign Expected  49.0188986`\
-`#> 32         bbj-a-1 ukb-e-21001_AFR   59    Sign Observed  41.0000000`\
-`#> 33         bbj-a-1     ukb-b-19953   59 P-value Expected  58.5508411`\
-`#> 34         bbj-a-1     ukb-b-19953   59 P-value Observed  55.0000000`\
-`#> 35         bbj-a-1     ukb-b-19953   59    Sign Expected  58.9999028`\
-`#> 36         bbj-a-1     ukb-b-19953   59    Sign Observed  59.0000000`\
+`#> 13     ukb-b-19953 ukb-e-23104_CSA  377 P-value Expected   1.8062068`\
+`#> 14     ukb-b-19953 ukb-e-23104_CSA  377 P-value Observed   2.0000000`\
+`#> 15     ukb-b-19953 ukb-e-23104_CSA  377    Sign Expected 314.6226158`\
+`#> 16     ukb-b-19953 ukb-e-23104_CSA  377    Sign Observed 271.0000000`\
+`#> 17     ukb-b-19953 ukb-e-21001_AFR  377 P-value Expected   0.3238810`\
+`#> 18     ukb-b-19953 ukb-e-21001_AFR  377 P-value Observed   1.0000000`\
+`#> 19     ukb-b-19953 ukb-e-21001_AFR  377    Sign Expected 285.3702608`\
+`#> 20     ukb-b-19953 ukb-e-21001_AFR  377    Sign Observed 225.0000000`\
+`#> 21     ukb-b-19953         bbj-a-1  377 P-value Expected 127.5615021`\
+`#> 22     ukb-b-19953         bbj-a-1  377 P-value Observed  58.0000000`\
+`#> 23     ukb-b-19953         bbj-a-1  377    Sign Expected 372.6560995`\
+`#> 24     ukb-b-19953         bbj-a-1  377    Sign Observed 329.0000000`\
+`#> 25         bbj-a-1 ukb-e-23104_CSA   61 P-value Expected   1.5812878`\
+`#> 26         bbj-a-1 ukb-e-23104_CSA   61 P-value Observed   2.0000000`\
+`#> 27         bbj-a-1 ukb-e-23104_CSA   61    Sign Expected  55.5707081`\
+`#> 28         bbj-a-1 ukb-e-23104_CSA   61    Sign Observed  51.0000000`\
+`#> 29         bbj-a-1 ukb-e-21001_AFR   61 P-value Expected   0.2222185`\
+`#> 30         bbj-a-1 ukb-e-21001_AFR   61 P-value Observed   1.0000000`\
+`#> 31         bbj-a-1 ukb-e-21001_AFR   61    Sign Expected  50.7653607`\
+`#> 32         bbj-a-1 ukb-e-21001_AFR   61    Sign Observed  43.0000000`\
+`#> 33         bbj-a-1     ukb-b-19953   61 P-value Expected  60.5406720`\
+`#> 34         bbj-a-1     ukb-b-19953   61 P-value Observed  57.0000000`\
+`#> 35         bbj-a-1     ukb-b-19953   61    Sign Expected  60.9999028`\
+`#> 36         bbj-a-1     ukb-b-19953   61    Sign Observed  61.0000000`\
 `#>           pdiff`\
 `#> 1  1.000000e+00`\
 `#> 2  1.000000e+00`\
@@ -575,34 +576,34 @@ are closer to 1 for most pairs of ancestries.
 `#> 10 1.000000e+00`\
 `#> 11 1.000000e+00`\
 `#> 12 1.000000e+00`\
-`#> 13 6.991154e-01`\
-`#> 14 6.991154e-01`\
-`#> 15 1.620236e-07`\
-`#> 16 1.620236e-07`\
-`#> 17 2.786480e-01`\
-`#> 18 2.786480e-01`\
-`#> 19 8.514097e-12`\
-`#> 20 8.514097e-12`\
-`#> 21 1.948444e-14`\
-`#> 22 1.948444e-14`\
-`#> 23 1.815584e-25`\
-`#> 24 1.815584e-25`\
-`#> 25 6.734155e-01`\
-`#> 26 6.734155e-01`\
-`#> 27 6.398948e-02`\
-`#> 28 6.398948e-02`\
-`#> 29 2.046440e-01`\
-`#> 30 2.046440e-01`\
-`#> 31 8.688985e-03`\
-`#> 32 8.688985e-03`\
-`#> 33 1.095059e-03`\
-`#> 34 1.095059e-03`\
+`#> 13 7.031463e-01`\
+`#> 14 7.031463e-01`\
+`#> 15 2.038430e-08`\
+`#> 16 2.038430e-08`\
+`#> 17 2.767644e-01`\
+`#> 18 2.767644e-01`\
+`#> 19 6.677149e-12`\
+`#> 20 6.677149e-12`\
+`#> 21 1.087440e-15`\
+`#> 22 1.087440e-15`\
+`#> 23 3.515845e-34`\
+`#> 24 3.515845e-34`\
+`#> 25 6.729494e-01`\
+`#> 26 6.729494e-01`\
+`#> 27 6.573025e-02`\
+`#> 28 6.573025e-02`\
+`#> 29 1.995844e-01`\
+`#> 30 1.995844e-01`\
+`#> 31 1.478408e-02`\
+`#> 32 1.478408e-02`\
+`#> 33 1.191887e-03`\
+`#> 34 1.191887e-03`\
 `#> 35 1.000000e+00`\
 `#> 36 1.000000e+00`\
 `x``$``instrument_specificity``$``distinct`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` ``table`\
 `#> .`\
 `#> FALSE  TRUE `\
-`#>  1077   153`
+`#>  1148   169`
 
 Instruments with `distinct` equal to `TRUE` were expected to replicate,
 or to have the same sign, in another population but did not.
@@ -629,7 +630,7 @@ estimated based on the population’s specific MR estimate.
 
 \
 `x``$``pleiotropy_outliers`\
-`#> ``# A tibble: 24 × 16`\
+`#> ``# A tibble: 36 × 16`\
 `#>    SNP         pops    beta.x    se.x   beta.y    se.y   pval.x  pval.y       wr`\
 `#>    ``<chr>``       ``<chr>``    ``<dbl>``   ``<dbl>``    ``<dbl>``   ``<dbl>``    ``<dbl>``   ``<dbl>``    ``<dbl>`\
 `#> `` 1`` 10:1049422… SAS    0.015``4``  0.017``6``   3.00``e``-2`` 0.054``6``  1.90``e``- 1`` 2.91``e``-1``  1.95``e``+0`\
@@ -640,9 +641,9 @@ estimated based on the population’s specific MR estimate.
 `#> `` 6`` 11:1331520… AFR   -``0.102``   0.038``1``  -``2.18``e``-2`` 0.168   3.81``e``- 3`` 4.49``e``-1``  2.14``e``-1`\
 `#> `` 7`` 11:1331520… EUR    0.016``4``  0.002``00``  4.00``e``-2`` 0.009``74`` 1.15``e``-16`` 2.00``e``-5``  2.44``e``+0`\
 `#> `` 8`` 11:1331520… EAS    0.010``3``  0.004``51``  8.29``e``-3`` 0.018``9``  1.13``e``- 2`` 3.30``e``-1``  8.06``e``-1`\
-`#> `` 9`` 16:2482039… SAS    0.004``49`` 0.016``4``   1.89``e``-1`` 0.051``0``  3.92``e``- 1`` 1.04``e``-4``  4.21``e``+1`\
-`#> ``10`` 16:2482039… AFR   -``0.010``6``  0.018``6``   6.80``e``-2`` 0.081``2``  2.85``e``- 1`` 2.01``e``-1`` -``6.44``e``+0`\
-`#> ``# ℹ 14 more rows`\
+`#> `` 9`` 11:1169473… SAS   -``0.009``40`` 0.026``7``  -``7.18``e``-2`` 0.083``0``  3.62``e``- 1`` 1.93``e``-1``  7.64``e``+0`\
+`#> ``10`` 11:1169473… AFR   -``0.026``8``  0.032``7``   1.15``e``-1`` 0.144   2.06``e``- 1`` 2.12``e``-1`` -``4.28``e``+0`\
+`#> ``# ℹ 26 more rows`\
 `#> ``# ℹ 7 more variables: wr.se <dbl>, biv <dbl>, biv.se <dbl>, dif <dbl>,`\
 `#> ``#   dif.se <dbl>, Qj <dbl>, Qjpval <dbl>`
 
@@ -652,13 +653,13 @@ sign is the same for outliers discovered in Europeans:
 
 \
 `x``$``pleiotropy_agreement`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` ``as.data.frame`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` `[`subset`](https://rdrr.io/r/base/subset.html)`(``disc`` ``==`` ``"EUR"`` ``&`` ``metric``==``"Sign"``)`\
-`#>    disc rep nsnp metric    datum    value      pdiff`\
-`#> 15  EUR SAS    5   Sign Expected 4.058494 0.23895174`\
-`#> 16  EUR SAS    5   Sign Observed 3.000000 0.23895174`\
-`#> 19  EUR AFR    5   Sign Expected 3.553418 0.02692357`\
-`#> 20  EUR AFR    5   Sign Observed 1.000000 0.02692357`\
-`#> 23  EUR EAS    5   Sign Expected 4.648356 0.04286444`\
-`#> 24  EUR EAS    5   Sign Observed 3.000000 0.04286444`
+`#>    disc rep nsnp metric    datum    value       pdiff`\
+`#> 15  EUR SAS    7   Sign Expected 5.410300 0.051335225`\
+`#> 16  EUR SAS    7   Sign Observed 3.000000 0.051335225`\
+`#> 19  EUR AFR    7   Sign Expected 4.979110 0.111858226`\
+`#> 20  EUR AFR    7   Sign Observed 3.000000 0.111858226`\
+`#> 23  EUR EAS    7   Sign Expected 6.553344 0.007480742`\
+`#> 24  EUR EAS    7   Sign Observed 4.000000 0.007480742`
 
 Look at the overall relationship of outlier deviations across
 populations
@@ -705,74 +706,74 @@ associations
 
 \
 `x``$``estimate_instrument_heterogeneity_per_variant``(``)`\
-`#> ``# A tibble: 272 × 5`\
-`#> ``# Groups:   SNP [272]`\
-`#>    SNP                Qdf      Q    Qpval     Qfdr`\
-`#>    ``<chr>``            ``<dbl>``  ``<dbl>``    ``<dbl>``    ``<dbl>`\
-`#> `` 1`` 10:104942244_G_T     3  0.650 0.885    0.885   `\
-`#> `` 2`` 10:118650996_C_T     3 17.7   0.000``502`` 0.000``502`\
-`#> `` 3`` 10:134007008_A_C     3  8.12  0.043``6``   0.043``6``  `\
-`#> `` 4`` 10:16750129_G_T      3  0.510 0.917    0.917   `\
-`#> `` 5`` 10:18573654_A_G      3  6.63  0.084``7``   0.084``7``  `\
-`#> `` 6`` 10:21830104_A_G      3  3.19  0.363    0.363   `\
-`#> `` 7`` 10:61842645_C_T      3  6.16  0.104    0.104   `\
-`#> `` 8`` 10:65191645_G_T      3  0.621 0.892    0.892   `\
-`#> `` 9`` 10:76363107_C_T      3  1.70  0.637    0.637   `\
-`#> ``10`` 10:78760959_C_T      3  1.91  0.590    0.590   `\
-`#> ``# ℹ 262 more rows`\
+`#> ``# A tibble: 381 × 5`\
+`#> ``# Groups:   SNP [381]`\
+`#>    SNP                Qdf      Q     Qpval      Qfdr`\
+`#>    ``<chr>``            ``<dbl>``  ``<dbl>``     ``<dbl>``     ``<dbl>`\
+`#> `` 1`` 10:104942244_G_T     3  0.650 0.885     0.885    `\
+`#> `` 2`` 10:118650996_C_T     3 17.7   0.000``502``  0.000``502`` `\
+`#> `` 3`` 10:132953074_C_T     3 22.3   0.000``055``6 0.000``055``6`\
+`#> `` 4`` 10:134007008_A_C     3  8.12  0.043``6``    0.043``6``   `\
+`#> `` 5`` 10:16750129_G_T      3  0.510 0.917     0.917    `\
+`#> `` 6`` 10:18573654_A_G      3  6.63  0.084``7``    0.084``7``   `\
+`#> `` 7`` 10:21830104_A_G      3  3.19  0.363     0.363    `\
+`#> `` 8`` 10:33955430_C_T      3 13.5   0.003``75``   0.003``75``  `\
+`#> `` 9`` 10:53673286_A_G      3  4.26  0.235     0.235    `\
+`#> ``10`` 10:61842645_C_T      3  6.16  0.104     0.104    `\
+`#> ``# ℹ 371 more rows`\
 `x``$``instrument_heterogeneity_per_variant`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` ``dplyr``::`[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(``Qfdr`` ``<`` ``0.05``)`\
-`#> ``# A tibble: 53 × 5`\
-`#> ``# Groups:   SNP [53]`\
-`#>    SNP                Qdf     Q        Qpval         Qfdr`\
-`#>    ``<chr>``            ``<dbl>`` ``<dbl>``        ``<dbl>``        ``<dbl>`\
-`#> `` 1`` 10:118650996_C_T     3 17.7  0.000``502``     0.000``502``    `\
-`#> `` 2`` 10:134007008_A_C     3  8.12 0.043``6``       0.043``6``      `\
-`#> `` 3`` 10:87490850_A_G      3  8.51 0.036``5``       0.036``5``      `\
-`#> `` 4`` 11:130795698_G_T     3 14.5  0.002``32``      0.002``32``     `\
-`#> `` 5`` 11:13315205_C_T      3 11.9  0.007``86``      0.007``86``     `\
-`#> `` 6`` 11:2858440_A_G       3 29.5  0.000``001``79   0.000``001``79  `\
-`#> `` 7`` 11:43648368_G_T      3 12.4  0.006``27``      0.006``27``     `\
-`#> `` 8`` 11:45420233_A_G      3  8.59 0.035``2``       0.035``2``      `\
-`#> `` 9`` 12:103658096_A_G     3 13.2  0.004``28``      0.004``28``     `\
-`#> ``10`` 12:123492112_C_T     3 38.6  0.000``000``021``1`` 0.000``000``021``1`\
-`#> ``# ℹ 43 more rows`
+`#> ``# A tibble: 100 × 5`\
+`#> ``# Groups:   SNP [100]`\
+`#>    SNP                Qdf     Q      Qpval       Qfdr`\
+`#>    ``<chr>``            ``<dbl>`` ``<dbl>``      ``<dbl>``      ``<dbl>`\
+`#> `` 1`` 10:118650996_C_T     3 17.7  0.000``502``   0.000``502``  `\
+`#> `` 2`` 10:132953074_C_T     3 22.3  0.000``055``6  0.000``055``6 `\
+`#> `` 3`` 10:134007008_A_C     3  8.12 0.043``6``     0.043``6``    `\
+`#> `` 4`` 10:33955430_C_T      3 13.5  0.003``75``    0.003``75``   `\
+`#> `` 5`` 10:87490850_A_G      3  8.51 0.036``5``     0.036``5``    `\
+`#> `` 6`` 10:99772885_A_G      3 18.8  0.000``298``   0.000``298``  `\
+`#> `` 7`` 11:130795698_G_T     3 14.5  0.002``32``    0.002``32``   `\
+`#> `` 8`` 11:13315205_C_T      3 11.9  0.007``86``    0.007``86``   `\
+`#> `` 9`` 11:134589355_A_T     3  8.65 0.034``3``     0.034``3``    `\
+`#> ``10`` 11:2858440_A_G       3 29.5  0.000``001``79 0.000``001``79`\
+`#> ``# ℹ 90 more rows`
 
 Next perform MR GxE (may take a couple of minutes while bootstrapping
 standard errors)
 
 \
 `x``$``mrgxe``(``)`\
-`#> ``# A tibble: 53 × 9`\
-`#> ``# Groups:   SNP [53]`\
-`#>    SNP                    a       b   a_se  b_se a_pval b_pval   a_mean   b_mean`\
-`#>    ``<chr>``              ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``    ``<dbl>``    ``<dbl>`\
-`#> `` 1`` 10:118650996_C…  4.50``e``-2``  2.14   0.024``9``  1.65 0.035``3`` 0.097``6``  0.045``2``   1.93   `\
-`#> `` 2`` 10:134007008_A…  3.26``e``-3``  0.805  0.032``0``  2.38 0.459  0.367   0.006``00``  0.577  `\
-`#> `` 3`` 10:87490850_A_G -``1.94``e``-2`` -``0.030``5`` 0.049``3``  2.26 0.347  0.495  -``0.017``6``   0.007``25`\
-`#> `` 4`` 11:130795698_G… -``1.10``e``-2``  2.17   0.032``7``  1.70 0.368  0.100  -``0.006``93``  1.97   `\
-`#> `` 5`` 11:13315205_C_T  1.68``e``-3``  0.283  0.020``6``  1.66 0.468  0.432  -``0.003``67``  0.492  `\
-`#> `` 6`` 11:2858440_A_G  -``8.48``e``-2``  1.42   0.110   3.37 0.220  0.337  -``0.070``6``   0.603  `\
-`#> `` 7`` 11:43648368_G_T  1.64``e``-2``  1.53   0.030``9``  1.70 0.298  0.183   0.013``5``   1.09   `\
-`#> `` 8`` 11:45420233_A_G  1.75``e``-5`` -``0.248``  0.031``0``  2.07 0.500  0.452  -``0.001``36`` -``0.019``7`` `\
-`#> `` 9`` 12:103658096_A…  6.39``e``-2`` -``2.25``   0.042``6``  1.53 0.066``8`` 0.071``4``  0.054``9``  -``1.93``   `\
-`#> ``10`` 12:123492112_C… -``7.81``e``-3``  1.63   0.031``4``  3.48 0.402  0.320  -``0.010``9``   0.778  `\
-`#> ``# ℹ 43 more rows`\
+`#> ``# A tibble: 100 × 9`\
+`#> ``# Groups:   SNP [100]`\
+`#>    SNP                     a       b   a_se  b_se a_pval b_pval   a_mean b_mean`\
+`#>    ``<chr>``               ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``    ``<dbl>``  ``<dbl>`\
+`#> `` 1`` 10:118650996_C_T  0.045``0``   2.14   0.024``9``  1.65 0.035``3`` 0.097``6``  0.045``2``   1.93 `\
+`#> `` 2`` 10:132953074_C_T -``0.039``9``   3.84   0.038``0``  3.47 0.147  0.134  -``0.041``3``   1.11 `\
+`#> `` 3`` 10:134007008_A_C  0.003``26``  0.805  0.026``7``  2.45 0.451  0.371   0.007``53``  0.684`\
+`#> `` 4`` 10:33955430_C_T   0.006``10`` -``0.195``  0.037``4``  1.66 0.435  0.453   0.016``0``  -``0.575`\
+`#> `` 5`` 10:87490850_A_G  -``0.019``4``  -``0.030``5`` 0.042``6``  2.04 0.325  0.494  -``0.027``2``  -``0.130`\
+`#> `` 6`` 10:99772885_A_G  -``0.019``5``  -``1.48``   0.029``6``  1.94 0.255  0.223  -``0.018``8``  -``1.24`` `\
+`#> `` 7`` 11:130795698_G_T -``0.011``0``   2.17   0.040``1``  2.16 0.392  0.158  -``0.016``9``   2.35 `\
+`#> `` 8`` 11:13315205_C_T   0.001``68``  0.283  0.023``6``  1.85 0.472  0.439   0.002``85``  0.341`\
+`#> `` 9`` 11:134589355_A_T  0.075``6``  -``4.77``   0.087``6``  3.20 0.194  0.067``9``  0.057``9``  -``3.77`` `\
+`#> ``10`` 11:2858440_A_G   -``0.084``8``   1.42   0.117   2.78 0.234  0.304  -``0.076``0``   0.799`\
+`#> ``# ℹ 90 more rows`\
 `x``$``mrgxe_res`\
-`#> ``# A tibble: 53 × 9`\
-`#> ``# Groups:   SNP [53]`\
-`#>    SNP                    a       b   a_se  b_se a_pval b_pval   a_mean   b_mean`\
-`#>    ``<chr>``              ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``    ``<dbl>``    ``<dbl>`\
-`#> `` 1`` 10:118650996_C…  4.50``e``-2``  2.14   0.024``9``  1.65 0.035``3`` 0.097``6``  0.045``2``   1.93   `\
-`#> `` 2`` 10:134007008_A…  3.26``e``-3``  0.805  0.032``0``  2.38 0.459  0.367   0.006``00``  0.577  `\
-`#> `` 3`` 10:87490850_A_G -``1.94``e``-2`` -``0.030``5`` 0.049``3``  2.26 0.347  0.495  -``0.017``6``   0.007``25`\
-`#> `` 4`` 11:130795698_G… -``1.10``e``-2``  2.17   0.032``7``  1.70 0.368  0.100  -``0.006``93``  1.97   `\
-`#> `` 5`` 11:13315205_C_T  1.68``e``-3``  0.283  0.020``6``  1.66 0.468  0.432  -``0.003``67``  0.492  `\
-`#> `` 6`` 11:2858440_A_G  -``8.48``e``-2``  1.42   0.110   3.37 0.220  0.337  -``0.070``6``   0.603  `\
-`#> `` 7`` 11:43648368_G_T  1.64``e``-2``  1.53   0.030``9``  1.70 0.298  0.183   0.013``5``   1.09   `\
-`#> `` 8`` 11:45420233_A_G  1.75``e``-5`` -``0.248``  0.031``0``  2.07 0.500  0.452  -``0.001``36`` -``0.019``7`` `\
-`#> `` 9`` 12:103658096_A…  6.39``e``-2`` -``2.25``   0.042``6``  1.53 0.066``8`` 0.071``4``  0.054``9``  -``1.93``   `\
-`#> ``10`` 12:123492112_C… -``7.81``e``-3``  1.63   0.031``4``  3.48 0.402  0.320  -``0.010``9``   0.778  `\
-`#> ``# ℹ 43 more rows`
+`#> ``# A tibble: 100 × 9`\
+`#> ``# Groups:   SNP [100]`\
+`#>    SNP                     a       b   a_se  b_se a_pval b_pval   a_mean b_mean`\
+`#>    ``<chr>``               ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``    ``<dbl>``  ``<dbl>`\
+`#> `` 1`` 10:118650996_C_T  0.045``0``   2.14   0.024``9``  1.65 0.035``3`` 0.097``6``  0.045``2``   1.93 `\
+`#> `` 2`` 10:132953074_C_T -``0.039``9``   3.84   0.038``0``  3.47 0.147  0.134  -``0.041``3``   1.11 `\
+`#> `` 3`` 10:134007008_A_C  0.003``26``  0.805  0.026``7``  2.45 0.451  0.371   0.007``53``  0.684`\
+`#> `` 4`` 10:33955430_C_T   0.006``10`` -``0.195``  0.037``4``  1.66 0.435  0.453   0.016``0``  -``0.575`\
+`#> `` 5`` 10:87490850_A_G  -``0.019``4``  -``0.030``5`` 0.042``6``  2.04 0.325  0.494  -``0.027``2``  -``0.130`\
+`#> `` 6`` 10:99772885_A_G  -``0.019``5``  -``1.48``   0.029``6``  1.94 0.255  0.223  -``0.018``8``  -``1.24`` `\
+`#> `` 7`` 11:130795698_G_T -``0.011``0``   2.17   0.040``1``  2.16 0.392  0.158  -``0.016``9``   2.35 `\
+`#> `` 8`` 11:13315205_C_T   0.001``68``  0.283  0.023``6``  1.85 0.472  0.439   0.002``85``  0.341`\
+`#> `` 9`` 11:134589355_A_T  0.075``6``  -``4.77``   0.087``6``  3.20 0.194  0.067``9``  0.057``9``  -``3.77`` `\
+`#> ``10`` 11:2858440_A_G   -``0.084``8``   1.42   0.117   2.78 0.234  0.304  -``0.076``0``   0.799`\
+`#> ``# ℹ 90 more rows`
 
 This is the distribution of the estimate of the pleiotropic effect of
 each SNP that showed heterogeneity
@@ -786,15 +787,17 @@ Any evidence of SNPs with substantial heterogeneity?
 
 \
 `x``$``mrgxe_res`` `[`%>%`](https://mrcieu.github.io/CAMERA/reference/pipe.md)` ``dplyr``::`[`filter`](https://dplyr.tidyverse.org/reference/filter.html)`(`[`p.adjust`](https://rdrr.io/r/stats/p.adjust.html)`(``a_pval``, ``"fdr"``)`` ``<`` ``0.05``)`\
-`#> ``# A tibble: 5 × 9`\
-`#> ``# Groups:   SNP [5]`\
-`#>   SNP                    a     b   a_se  b_se a_pval b_pval  a_mean b_mean`\
-`#>   ``<chr>``              ``<dbl>`` ``<dbl>``  ``<dbl>`` ``<dbl>``  ``<dbl>``  ``<dbl>``   ``<dbl>``  ``<dbl>`\
-`#> ``1`` 10:118650996_C_T  0.045``0``  2.14 0.024``9``  1.65 0.035``3`` 0.097``6``  0.045``2``   1.93`\
-`#> ``2`` 13:58259492_A_C  -``0.080``4`` -``4.47`` 0.038``2``  3.05 0.017``7`` 0.071``3`` -``0.078``9``  -``2.97`\
-`#> ``3`` 16:76895693_A_G   0.056``7``  2.19 0.026``2``  2.71 0.015``4`` 0.209   0.049``4``   1.78`\
-`#> ``4`` 5:86857717_C_T   -``0.094``2`` -``2.74`` 0.049``9``  1.46 0.029``5`` 0.030``7`` -``0.100``   -``2.29`\
-`#> ``5`` 9:28418511_A_G    0.083``5`` -``3.03`` 0.041``9``  1.85 0.023``2`` 0.051``0``  0.079``2``  -``2.98`
+`#> ``# A tibble: 7 × 9`\
+`#> ``# Groups:   SNP [7]`\
+`#>   SNP                    a       b   a_se  b_se  a_pval b_pval  a_mean  b_mean`\
+`#>   ``<chr>``              ``<dbl>``   ``<dbl>``  ``<dbl>`` ``<dbl>``   ``<dbl>``  ``<dbl>``   ``<dbl>``   ``<dbl>`\
+`#> ``1`` 10:118650996_C_T  0.045``0``  2.14   0.024``9``  1.65 0.035``3``  0.097``6``  0.045``2``  1.93  `\
+`#> ``2`` 13:58259492_A_C  -``0.080``4`` -``4.47``   0.043``7``  3.31 0.032``9``  0.088``5`` -``0.076``2`` -``2.88``  `\
+`#> ``3`` 16:19925612_C_T   0.070``5``  1.74   0.042``5``  2.11 0.048``5``  0.205   0.063``2``  1.29  `\
+`#> ``4`` 16:76895693_A_G   0.056``7``  2.19   0.026``6``  3.06 0.016``7``  0.237   0.049``4``  1.91  `\
+`#> ``5`` 19:33953354_G_T  -``0.068``1`` -``0.086``9`` 0.023``9``  1.69 0.002``24`` 0.479  -``0.062``1`` -``0.023``6`\
+`#> ``6`` 2:161265910_C_T  -``0.032``3`` -``0.701``  0.019``4``  2.13 0.048``2``  0.371  -``0.028``2`` -``0.318`` `\
+`#> ``7`` 3:62354425_A_G    0.038``5``  0.285  0.023``3``  1.62 0.049``0``  0.430   0.035``1`` -``0.065``5`
 
 It’s worth always checking if these look credible e.g. this plots the
 SNP-exposure against SNP-outcome associations for the identified SNPs.
