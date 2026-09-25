@@ -1,6 +1,6 @@
 Package: CAMeRa
 Title: CAMeRa (Cross Ancestral Mendelian Randomisation)
-Version: 0.1.4.9000
+Version: 0.1.4
 Authors@R: c(
     person("Yoonsu", "Cho", , "yoonsu.cho@bristol.ac.uk", role = "aut"),
     person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = c("aut", "cre"),
